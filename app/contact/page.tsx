@@ -252,7 +252,7 @@ const Contactus = () => {
                             </div>
 
                             <p className="text-gray-600 leading-relaxed mb-8">
-                                If you still need help, we'd love to hear from you. Feel free to reach out.
+                                If you still need help, we&apos;d love to hear from you. Feel free to reach out.
                             </p>
 
                             <div className="space-y-4">

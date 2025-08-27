@@ -543,7 +543,7 @@ const HomePage = () => {
           <div className="mb-12">
             <div className="flex items-center justify-center mb-2">
               <div className="w-8 h-0.5 bg-orange-500 mr-3"></div>
-              <span className="text-sm text-gray-500">What's news</span>
+              <span className="text-sm text-gray-500">What&apos;s news</span>
             </div>
             <h2 className="text-4xl font-bold text-gray-800 text-center">
               Upcoming events
@@ -758,7 +758,7 @@ const HomePage = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             {/* Card 1 - WILLIAM TROSYON */}
             <div className="bg-white rounded-xl shadow-lg p-6 relative">
-              <div className="absolute top-4 left-4 text-orange-500 text-4xl">"</div>
+              <div className="absolute top-4 left-4 text-orange-500 text-4xl">&quot;</div>
               <div className="text-center">
                 <div className="w-20 h-20 bg-orange-200 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-orange-600 text-2xl">👨‍🔬</span>
@@ -778,7 +778,7 @@ const HomePage = () => {
 
             {/* Card 2 - YOAN MORGAN */}
             <div className="bg-white rounded-xl shadow-lg p-6 relative">
-              <div className="absolute top-4 left-4 text-orange-500 text-4xl">"</div>
+              <div className="absolute top-4 left-4 text-orange-500 text-4xl">&quot;</div>
               <div className="text-center">
                 <div className="w-20 h-20 bg-orange-200 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-orange-600 text-2xl">👩‍🌾</span>
@@ -798,7 +798,7 @@ const HomePage = () => {
 
             {/* Card 3 - ESMA WATSON */}
             <div className="bg-white rounded-xl shadow-lg p-6 relative">
-              <div className="absolute top-4 left-4 text-orange-500 text-4xl">"</div>
+              <div className="absolute top-4 left-4 text-orange-500 text-4xl">&quot;</div>
               <div className="text-center">
                 <div className="w-20 h-20 bg-orange-200 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-orange-600 text-2xl">👨‍💼</span>
@@ -832,7 +832,7 @@ const HomePage = () => {
           <div className="mb-12">
             <div className="flex items-center justify-center mb-2">
               <div className="w-8 h-0.5 bg-orange-500 mr-3"></div>
-              <span className="text-sm text-gray-500">What's update now</span>
+              <span className="text-sm text-gray-500">What&apos;s update now</span>
             </div>
             <h2 className="text-4xl font-bold text-gray-800 text-center">
               Get update from our blog

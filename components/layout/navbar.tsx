@@ -87,7 +87,7 @@ const Navbar = () => {
               </div>
             </div>
             <div className="flex items-center space-x-4 mt-2 sm:mt-0">
-              <span>We're active on</span>
+              <span>We&apos;re active on</span>
               <div className="flex space-x-2">
                 <BsInstagram />
                 <FaSquareFacebook />
