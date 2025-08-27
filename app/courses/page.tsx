@@ -162,13 +162,6 @@ export default function CoursesPage() {
             <h2 className="text-4xl font-bold text-gray-800 mb-8">
               Choose your perfect one and Enroll
             </h2>
-
-            {/* Category Navigation */}
-            {/* <div className="flex space-x-8">
-              <button className="text-orange-500 border-b-2 border-orange-500 pb-2 font-medium">Baking</button>
-              <button className="text-gray-500 hover:text-orange-500 transition-colors">Business Management</button>
-              <button className="text-gray-500 hover:text-orange-500 transition-colors">Digital Marketing</button>
-            </div> */}
           </div>
 
           {/* Course Cards */}
