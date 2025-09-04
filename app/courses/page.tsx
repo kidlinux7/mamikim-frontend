@@ -119,7 +119,7 @@ export default function CoursesPage() {
       <div className="container mx-auto py-16 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[...Array(6)].map((_, i) => (
+            {[...Array(3)].map((_, i) => (
               <Card key={i} className="animate-pulse">
                 <div className="aspect-video bg-muted"></div>
                 <CardHeader>
@@ -166,194 +166,92 @@ export default function CoursesPage() {
 
           {/* Course Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            {/* Course Card 1 */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-              <div className="relative">
-                <div className="w-full h-48 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-orange-300 rounded-full flex items-center justify-center mb-2">
-                      <span className="text-orange-600 text-2xl">🍰</span>
+            {filteredCourses.length === 0 ? (
+              <div className="col-span-full text-center py-12">
+                <h3 className="text-xl font-semibold text-gray-600 mb-2">No courses found</h3>
+                <p className="text-gray-500">Try adjusting your search or filters</p>
+              </div>
+            ) : (
+              filteredCourses.map((course) => (
+                <div key={course.id} className="bg-white rounded-xl shadow-lg overflow-hidden">
+                  <div className="relative">
+                    <div className="w-full h-48 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
+                      {course.image_url ? (
+                        <Image
+                          src={course.image_url}
+                          alt={course.title}
+                          width={200}
+                          height={200}
+                          className="object-cover w-full h-full"
+                        />
+                      ) : (
+                        <div className="text-center">
+                          <div className="w-16 h-16 bg-orange-300 rounded-full flex items-center justify-center mb-2">
+                            <span className="text-orange-600 text-2xl">📚</span>
+                          </div>
+                          <p className="text-orange-600 text-sm">{course.level}</p>
+                        </div>
+                      )}
                     </div>
-                    <p className="text-orange-600 text-sm">Baking Course</p>
-                  </div>
-                </div>
 
-                {/* Rating */}
-                <div className="absolute top-4 right-4 flex items-center bg-white bg-opacity-90 rounded-full px-2 py-1">
-                  <div className="flex text-orange-500">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-3 w-3 fill-current" />
-                    ))}
-                  </div>
-                  <span className="ml-1 text-xs text-gray-600">(12k)</span>
-                </div>
-
-                {/* Lesson Count */}
-                <div className="absolute bottom-4 left-4 flex items-center bg-orange-500 bg-opacity-90 rounded-full px-2 py-1">
-                  <BookOpen className="h-3 w-3 text-white" />
-                  <span className="ml-1 text-xs text-white">6 Lessons</span>
-                </div>
-
-                {/* Duration */}
-                <div className="absolute bottom-4 right-4 flex items-center bg-orange-500 bg-opacity-90 rounded-full px-2 py-1">
-                  <Calendar className="h-3 w-3 text-white" />
-                  <span className="ml-1 text-xs text-white">3:56:59</span>
-                </div>
-              </div>
-
-              <div className="p-6">
-                {/* Instructor */}
-                <div className="flex items-center mb-3">
-                  <div className="w-6 h-6 bg-orange-200 rounded-full flex items-center justify-center mr-2">
-                    <span className="text-orange-600 text-xs">👤</span>
-                  </div>
-                  <span className="text-orange-500 text-sm">Course Instructor</span>
-                </div>
-
-                {/* Title */}
-                <h3 className="text-lg font-bold text-gray-800 mb-3">Baking a simple cake</h3>
-
-                {/* Description */}
-                <p className="text-gray-500 text-sm mb-4">
-                  Conubia egestas eos laboris netus velit mi aliquid aute euismod, integer? Quo class taciti labore
-                </p>
-
-                {/* Action and Price */}
-                <div className="flex items-center justify-between">
-                  <button className="flex items-center text-gray-800 hover:text-orange-500 transition-colors">
-                    <span className="text-sm font-medium">Enroll now</span>
-                    <ArrowRight className="ml-1 h-3 w-3" />
-                  </button>
-                  <span className="text-orange-500 font-semibold">Free</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Course Card 2 */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-              <div className="relative">
-                <div className="w-full h-48 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-orange-300 rounded-full flex items-center justify-center mb-2">
-                      <span className="text-orange-600 text-2xl">🥖</span>
+                    {/* Rating */}
+                    <div className="absolute top-4 right-4 flex items-center bg-white bg-opacity-90 rounded-full px-2 py-1">
+                      <div className="flex text-orange-500">
+                        {[...Array(5)].map((_, i) => (
+                          <Star key={i} className="h-3 w-3 fill-current" />
+                        ))}
+                      </div>
+                      <span className="ml-1 text-xs text-gray-600">
+                        ({enrollmentCounts[course.id] || 0})
+                      </span>
                     </div>
-                    <p className="text-orange-600 text-sm">Dough Making</p>
-                  </div>
-                </div>
 
-                {/* Rating */}
-                <div className="absolute top-4 right-4 flex items-center bg-white bg-opacity-90 rounded-full px-2 py-1">
-                  <div className="flex text-orange-500">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-3 w-3 fill-current" />
-                    ))}
-                  </div>
-                  <span className="ml-1 text-xs text-gray-600">(12k)</span>
-                </div>
-
-                {/* Lesson Count */}
-                <div className="absolute bottom-4 left-4 flex items-center bg-orange-500 bg-opacity-90 rounded-full px-2 py-1">
-                  <BookOpen className="h-3 w-3 text-white" />
-                  <span className="ml-1 text-xs text-white">6 Lessons</span>
-                </div>
-
-                {/* Duration */}
-                <div className="absolute bottom-4 right-4 flex items-center bg-orange-500 bg-opacity-90 rounded-full px-2 py-1">
-                  <Calendar className="h-3 w-3 text-white" />
-                  <span className="ml-1 text-xs text-white">3:56:59</span>
-                </div>
-              </div>
-
-              <div className="p-6">
-                {/* Instructor */}
-                <div className="flex items-center mb-3">
-                  <div className="w-6 h-6 bg-orange-200 rounded-full flex items-center justify-center mr-2">
-                    <span className="text-orange-600 text-xs">👤</span>
-                  </div>
-                  <span className="text-orange-500 text-sm">Course Instructor</span>
-                </div>
-
-                {/* Title */}
-                <h3 className="text-lg font-bold text-gray-800 mb-3">Baking a simple cake</h3>
-
-                {/* Description */}
-                <p className="text-gray-500 text-sm mb-4">
-                  Conubia egestas eos laboris netus velit mi aliquid aute euismod, integer? Quo class taciti labore
-                </p>
-
-                {/* Action and Price */}
-                <div className="flex items-center justify-between">
-                  <button className="flex items-center text-gray-800 hover:text-orange-500 transition-colors">
-                    <span className="text-sm font-medium">Enroll now</span>
-                    <ArrowRight className="ml-1 h-3 w-3" />
-                  </button>
-                  <span className="text-orange-500 font-semibold">Free</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Course Card 3 */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-              <div className="relative">
-                <div className="w-full h-48 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-orange-300 rounded-full flex items-center justify-center mb-2">
-                      <span className="text-orange-600 text-2xl">🍩</span>
+                    {/* Lesson Count */}
+                    <div className="absolute bottom-4 left-4 flex items-center bg-orange-500 bg-opacity-90 rounded-full px-2 py-1">
+                      <BookOpen className="h-3 w-3 text-white" />
+                      <span className="ml-1 text-xs text-white">{Math.ceil(course.hours / 2)} Lessons</span>
                     </div>
-                    <p className="text-orange-600 text-sm">Donut Making</p>
+
+                    {/* Duration */}
+                    <div className="absolute bottom-4 right-4 flex items-center bg-orange-500 bg-opacity-90 rounded-full px-2 py-1">
+                      <Calendar className="h-3 w-3 text-white" />
+                      <span className="ml-1 text-xs text-white">{course.hours}h</span>
+                    </div>
+                  </div>
+
+                  <div className="p-6">
+                    {/* Instructor */}
+                    <div className="flex items-center mb-3">
+                      <div className="w-6 h-6 bg-orange-200 rounded-full flex items-center justify-center mr-2">
+                        <span className="text-orange-600 text-xs">👤</span>
+                      </div>
+                      <span className="text-orange-500 text-sm">Course Instructor</span>
+                    </div>
+
+                    {/* Title */}
+                    <h3 className="text-lg font-bold text-gray-800 mb-3">{course.title}</h3>
+
+                    {/* Description */}
+                    <p className="text-gray-500 text-sm mb-4">
+                      {course.description.length > 100 
+                        ? `${course.description.substring(0, 100)}...` 
+                        : course.description}
+                    </p>
+
+                    {/* Action and Price */}
+                    <div className="flex items-center justify-between">
+                      <button onClick={() => window.location.href = `/courses/${course.id}`} className="flex items-center text-gray-800 hover:text-orange-500 transition-colors">
+                        <span className="text-sm font-medium">Enroll now</span>
+                        <ArrowRight className="ml-1 h-3 w-3" />
+                      </button>
+                      <span className="text-orange-500 font-semibold">
+                        {course.price === 0 ? "Free" : `TZS ${course.price.toLocaleString()}`}
+                      </span>
+                    </div>
                   </div>
                 </div>
-
-                {/* Rating */}
-                <div className="absolute top-4 right-4 flex items-center bg-white bg-opacity-90 rounded-full px-2 py-1">
-                  <div className="flex text-orange-500">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-3 w-3 fill-current" />
-                    ))}
-                  </div>
-                  <span className="ml-1 text-xs text-gray-600">(12k)</span>
-                </div>
-
-                {/* Lesson Count */}
-                <div className="absolute bottom-4 left-4 flex items-center bg-orange-500 bg-opacity-90 rounded-full px-2 py-1">
-                  <BookOpen className="h-3 w-3 text-white" />
-                  <span className="ml-1 text-xs text-white">6 Lessons</span>
-                </div>
-
-                {/* Duration */}
-                <div className="absolute bottom-4 right-4 flex items-center bg-orange-500 bg-opacity-90 rounded-full px-2 py-1">
-                  <Calendar className="h-3 w-3 text-white" />
-                  <span className="ml-1 text-xs text-white">3:56:59</span>
-                </div>
-              </div>
-
-              <div className="p-6">
-                {/* Instructor */}
-                <div className="flex items-center mb-3">
-                  <div className="w-6 h-6 bg-orange-200 rounded-full flex items-center justify-center mr-2">
-                    <span className="text-orange-600 text-xs">👤</span>
-                  </div>
-                  <span className="text-orange-500 text-sm">Course Instructor</span>
-                </div>
-
-                {/* Title */}
-                <h3 className="text-lg font-bold text-gray-800 mb-3">Baking a simple cake</h3>
-
-                {/* Description */}
-                <p className="text-gray-500 text-sm mb-4">
-                  Conubia egestas eos laboris netus velit mi aliquid aute euismod, integer? Quo class taciti labore
-                </p>
-
-                {/* Action and Price */}
-                <div className="flex items-center justify-between">
-                  <button className="flex items-center text-gray-800 hover:text-orange-500 transition-colors">
-                    <span className="text-sm font-medium">Enroll now</span>
-                    <ArrowRight className="ml-1 h-3 w-3" />
-                  </button>
-                  <span className="text-orange-500 font-semibold">Free</span>
-                </div>
-              </div>
-            </div>
+              ))
+            )}
           </div>
 
           {/* Pagination */}

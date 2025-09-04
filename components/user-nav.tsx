@@ -73,7 +73,7 @@ export function UserNav({ user }: UserNavProps) {
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
             <AvatarImage src={user.user_metadata?.avatar_url} alt={user.email || ""} />
-            <AvatarFallback>{getUserInitials(user.email || "User")}</AvatarFallback>
+            <AvatarFallback className="text-black">{getUserInitials(user.email || "User")}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -98,18 +98,7 @@ export function UserNav({ user }: UserNavProps) {
               <span>Dashboard</span>
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link href="/courses" className="cursor-pointer w-full flex items-center">
-              <BookOpen className="mr-2 h-4 w-4" />
-              <span>Courses</span>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link href="/settings" className="cursor-pointer w-full flex items-center">
-              <Settings className="mr-2 h-4 w-4" />
-              <span>Settings</span>
-            </Link>
-          </DropdownMenuItem>
+
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem 

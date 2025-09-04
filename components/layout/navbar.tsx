@@ -9,6 +9,8 @@ import { IoLogIn } from 'react-icons/io5';
 import { LuSearch } from 'react-icons/lu';
 import { useRouter, usePathname } from "next/navigation";
 import { supabase } from '@/lib/supabase/client';
+import { ModeToggle } from '../theme-toggle';
+import { UserNav } from '../user-nav';
 
 
 const Navbar = () => {
@@ -42,9 +44,9 @@ const Navbar = () => {
     const checkRibbonState = () => {
       setRibbonClosed(localStorage.getItem('ribbonClosed') === 'true');
     };
-    
+
     checkRibbonState();
-    
+
     // Listen for storage changes (when ribbon is closed on other tabs)
     window.addEventListener('storage', checkRibbonState);
 
@@ -95,16 +97,28 @@ const Navbar = () => {
                 <FaTwitter />
               </div>
               <div className="flex items-center space-x-4 ml-4">
-                <button className="flex items-center" onClick={() => router.push("/auth/login")}>
-                  <span className="mr-1"><IoLogIn /></span>
-                  <span>Login</span>
-                </button>
-                <button className="flex items-center" onClick={() => router.push("/auth/signup")}>
-                  <span className="mr-1">
-                    <FaUserAlt />
-                  </span>
-                  <span>Register</span>
-                </button>
+
+                {user ? (
+                  <UserNav user={user} />
+                ) : (
+                  <div>
+                    <div className="hidden md:flex items-center space-x-4">
+                      <button className="flex items-center" onClick={() => router.push("/auth/login")}>
+                        <span className="mr-1"><IoLogIn /></span>
+                        <span>Login</span>
+                      </button>
+                      <button className="flex items-center" onClick={() => router.push("/auth/signup")}>
+                        <span className="mr-1">
+                          <FaUserAlt />
+                        </span>
+                        <span>Register</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+
+
               </div>
             </div>
           </div>
@@ -147,10 +161,10 @@ const Navbar = () => {
               <div className="p-2">
                 <LuSearch className="text-gray-800" />
               </div>
-              <button className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors">
+              {/* <button className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors">
                 <span className="text-xl"><FaCartShopping /></span>
                 <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
-              </button>
+              </button> */}
             </div>
 
             <div className="lg:hidden">
@@ -179,7 +193,7 @@ const Navbar = () => {
   );
 };
 
-export default Navbar; 
+export default Navbar;
 
 function setIsOpen(arg0: boolean) {
   throw new Error('Function not implemented.');

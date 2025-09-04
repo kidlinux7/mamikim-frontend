@@ -34,8 +34,8 @@ interface Course {
   instructor_id: string;
   rating?: number;
   what_you_will_learn: string[];
-  requirements: string[];
-  who_is_this_course_for: string[];
+  ingredients: string[];
+
   updated_at: string;
 
 }
@@ -57,8 +57,8 @@ const courseFormSchema = z.object({
   level: z.string().min(1, "Level is required"),
   hours: z.number().min(1, "Hours must be at least 1"),
   what_you_will_learn: z.array(z.string()).min(1, "Add at least one learning outcome"),
-  requirements: z.array(z.string()).min(1, "Add at least one requirement"),
-  who_is_this_course_for: z.array(z.string()).min(1, "Add at least one target audience")
+  ingredients: z.array(z.string()).min(1, "Add at least one requirement"),
+
 });
 
 type CourseFormValues = z.infer<typeof courseFormSchema>;
@@ -71,7 +71,7 @@ function ArrayField({
   placeholder
 }: {
   label: string;
-  name: "what_you_will_learn" | "requirements" | "who_is_this_course_for";
+  name: "what_you_will_learn" | "ingredients" ;
   control: any;
   placeholder: string;
 }) {
@@ -170,8 +170,8 @@ export default function LecturerDashboard() {
       level: "",
       hours: 1,
       what_you_will_learn: [""],
-      requirements: [""],
-      who_is_this_course_for: [""]
+      ingredients: [""],
+
     }
   });
 
@@ -186,8 +186,8 @@ export default function LecturerDashboard() {
       level: "",
       hours: 1,
       what_you_will_learn: [""],
-      requirements: [""],
-      who_is_this_course_for: [""]
+      ingredients: [""],
+
     }
   });
 
@@ -235,17 +235,17 @@ export default function LecturerDashboard() {
   }
 
   async function fetchCourses() {
-      const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error("User not authenticated");
 
-      const { data, error } = await supabase
-        .from('courses')
-        .select('*')
-        .eq('instructor_id', user.id)
-        .order('created_at', { ascending: false });
+    const { data, error } = await supabase
+      .from('courses')
+      .select('*')
+      .eq('instructor_id', user.id)
+      .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setCourses(data || []);
+    if (error) throw error;
+    setCourses(data || []);
   }
 
   async function fetchStats() {
@@ -310,11 +310,11 @@ export default function LecturerDashboard() {
     if (file) {
       // Validate file type
       if (!file.type.startsWith('image/')) {
-      toast({
+        toast({
           title: "Invalid file type",
           description: "Please select an image file",
-        variant: "destructive",
-      });
+          variant: "destructive",
+        });
         return;
       }
 
@@ -375,8 +375,8 @@ export default function LecturerDashboard() {
           image_url: imageUrl,
           instructor_id: user.id,
           what_you_will_learn: data.what_you_will_learn,
-          requirements: data.requirements,
-          who_is_this_course_for: data.who_is_this_course_for
+          ingredients: data.ingredients,
+
         });
 
       if (error) throw error;
@@ -431,8 +431,8 @@ export default function LecturerDashboard() {
           hours: data.hours,
           image_url: imageUrl,
           what_you_will_learn: data.what_you_will_learn,
-          requirements: data.requirements,
-          who_is_this_course_for: data.who_is_this_course_for,
+          ingredients: data.ingredients,
+
           updated_at: new Date().toISOString()
         })
         .eq('id', courseToEdit.id);
@@ -497,8 +497,8 @@ export default function LecturerDashboard() {
 
   // Loading state
   if (loading) {
-  return (
-    <div className="container mx-auto py-10">
+    return (
+      <div className="container mx-auto py-10">
         <div className="space-y-4">
           <div className="h-8 bg-muted rounded w-1/4 animate-pulse"></div>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -576,8 +576,8 @@ export default function LecturerDashboard() {
       </div>
 
       {/* Courses Management */}
-        <Card>
-          <CardHeader>
+      <Card>
+        <CardHeader>
           <div className="flex justify-between items-center">
             <div>
               <CardTitle>Manage Courses</CardTitle>
@@ -588,65 +588,65 @@ export default function LecturerDashboard() {
 
             {/* Create Course Dialog */}
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                      <DialogTrigger asChild>
-                        <Button>
-                          <Plus className="mr-2 h-4 w-4" /> Create Course
-                        </Button>
-                      </DialogTrigger>
+              <DialogTrigger asChild>
+                <Button>
+                  <Plus className="mr-2 h-4 w-4" /> Create Course
+                </Button>
+              </DialogTrigger>
               <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
-                        <DialogHeader>
+                <DialogHeader>
                   <DialogTitle>Create New Course</DialogTitle>
-                          <DialogDescription>
+                  <DialogDescription>
                     Fill in the details below to create a new course.
-                          </DialogDescription>
-                        </DialogHeader>
+                  </DialogDescription>
+                </DialogHeader>
 
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                     {/* Title */}
-                            <FormField
-                              control={form.control}
-                              name="title"
-                              render={({ field }) => (
-                                <FormItem>
+                    <FormField
+                      control={form.control}
+                      name="title"
+                      render={({ field }) => (
+                        <FormItem>
                           <FormLabel>Course Title</FormLabel>
-                                  <FormControl>
-                                    <Input placeholder="Enter course title" {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
+                          <FormControl>
+                            <Input placeholder="Enter course title" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
                     {/* Subtitle */}
-                            <FormField
-                              control={form.control}
+                    <FormField
+                      control={form.control}
                       name="subtitle"
-                              render={({ field }) => (
-                                <FormItem>
+                      render={({ field }) => (
+                        <FormItem>
                           <FormLabel>Subtitle</FormLabel>
-                                  <FormControl>
+                          <FormControl>
                             <Input placeholder="Enter course subtitle" {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
                     {/* Introduction Video Link */}
-                            <FormField
-                              control={form.control}
+                    <FormField
+                      control={form.control}
                       name="introduction_video"
-                              render={({ field }) => (
-                                <FormItem>
+                      render={({ field }) => (
+                        <FormItem>
                           <FormLabel>Introduction Video Link</FormLabel>
-                                  <FormControl>
+                          <FormControl>
                             <Input placeholder="Enter your introduction video link" {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
                     {/* Description */}
                     <FormField
@@ -685,57 +685,57 @@ export default function LecturerDashboard() {
                           />
                         </div>
                       )}
-                          </div>
+                    </div>
 
                     {/* Price and Hours */}
                     <div className="grid grid-cols-2 gap-4">
-                            <FormField
-                              control={form.control}
-                              name="price"
-                              render={({ field }) => (
-                                <FormItem>
+                      <FormField
+                        control={form.control}
+                        name="price"
+                        render={({ field }) => (
+                          <FormItem>
                             <FormLabel>Price (TZS)</FormLabel>
-                                  <FormControl>
+                            <FormControl>
                               <Input
                                 type="number"
                                 min="0"
                                 {...field}
                                 onChange={(e) => field.onChange(Number(e.target.value))}
                               />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                            <FormField
-                              control={form.control}
-                              name="hours"
-                              render={({ field }) => (
-                                <FormItem>
+                      <FormField
+                        control={form.control}
+                        name="hours"
+                        render={({ field }) => (
+                          <FormItem>
                             <FormLabel>Duration (Hours)</FormLabel>
-                                  <FormControl>
+                            <FormControl>
                               <Input
                                 type="number"
                                 min="1"
                                 {...field}
                                 onChange={(e) => field.onChange(Number(e.target.value))}
                               />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
 
                     {/* Level */}
-                            <FormField
-                              control={form.control}
-                              name="level"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Level</FormLabel>
-                                  <FormControl>
+                    <FormField
+                      control={form.control}
+                      name="level"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Level</FormLabel>
+                          <FormControl>
                             <Select onValueChange={field.onChange} value={field.value}>
                               <SelectTrigger>
                                 <SelectValue placeholder="Select a level" />
@@ -747,13 +747,13 @@ export default function LecturerDashboard() {
                                   <SelectItem value="Advanced">Advanced</SelectItem>
                                   <SelectItem value="All Levels">All Levels</SelectItem>
                                 </SelectGroup>
-                                      </SelectContent>
-                                </Select>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                              </SelectContent>
+                            </Select>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
                     {/* What You Will Learn */}
                     <ArrayField
@@ -763,23 +763,17 @@ export default function LecturerDashboard() {
                       placeholder="Enter a learning outcome"
                     />
 
-                    {/* Requirements */}
+                    {/* ingredients */}
                     <ArrayField
                       control={form.control}
-                      name="requirements"
-                      label="Requirements"
+                      name="ingredients"
+                      label="Ingredients"
                       placeholder="Enter a requirement"
                     />
 
-                    {/* Target Audience */}
-                    <ArrayField
-                      control={form.control}
-                      name="who_is_this_course_for"
-                      label="Who Is This Course For"
-                      placeholder="Enter target audience"
-                    />
 
-                        <DialogFooter>
+
+                    <DialogFooter>
                       <Button
                         type="button"
                         variant="outline"
@@ -791,11 +785,11 @@ export default function LecturerDashboard() {
                       <Button type="submit" disabled={isCreating}>
                         {isCreating ? "Creating..." : "Create Course"}
                       </Button>
-                        </DialogFooter>
-                    </form>
-                  </Form>
+                    </DialogFooter>
+                  </form>
+                </Form>
               </DialogContent>
-                </Dialog>
+            </Dialog>
 
             {/* Edit Course Dialog */}
             <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
@@ -810,49 +804,49 @@ export default function LecturerDashboard() {
                 <Form {...editForm}>
                   <form onSubmit={editForm.handleSubmit(onUpdate)} className="space-y-6">
                     {/* Title */}
-                  <FormField
+                    <FormField
                       control={editForm.control}
-                    name="title"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Course Title</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Enter course title" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                      name="title"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Course Title</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter course title" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
                     {/* Subtitle */}
-                  <FormField
+                    <FormField
                       control={editForm.control}
-                    name="subtitle"
-                    render={({ field }) => (
-                      <FormItem>
+                      name="subtitle"
+                      render={({ field }) => (
+                        <FormItem>
                           <FormLabel>Subtitle</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Enter course subtitle" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                          <FormControl>
+                            <Input placeholder="Enter course subtitle" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
                     {/* Introduction Video Link */}
-                  <FormField
+                    <FormField
                       control={editForm.control}
                       name="introduction_video"
-                    render={({ field }) => (
-                      <FormItem>
+                      render={({ field }) => (
+                        <FormItem>
                           <FormLabel>Introduction Video Link</FormLabel>
                           <FormControl>
                             <Input placeholder="Enter your introduction video link" {...field} />
                           </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
                     {/* Description */}
                     <FormField
@@ -891,47 +885,47 @@ export default function LecturerDashboard() {
                           />
                         </div>
                       )}
-                  </div>
+                    </div>
 
                     {/* Price and Hours */}
                     <div className="grid grid-cols-2 gap-4">
-                  <FormField
+                      <FormField
                         control={editForm.control}
-                    name="price"
-                    render={({ field }) => (
-                      <FormItem>
+                        name="price"
+                        render={({ field }) => (
+                          <FormItem>
                             <FormLabel>Price (TZS)</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
+                            <FormControl>
+                              <Input
+                                type="number"
                                 min="0"
-                            {...field}
+                                {...field}
                                 onChange={(e) => field.onChange(Number(e.target.value))}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-                  <FormField
+                      <FormField
                         control={editForm.control}
                         name="hours"
-                    render={({ field }) => (
-                      <FormItem>
+                        render={({ field }) => (
+                          <FormItem>
                             <FormLabel>Duration (Hours)</FormLabel>
-                        <FormControl>
+                            <FormControl>
                               <Input
                                 type="number"
                                 min="1"
-                            {...field}
+                                {...field}
                                 onChange={(e) => field.onChange(Number(e.target.value))}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </div>
 
                     {/* Level */}
@@ -966,57 +960,51 @@ export default function LecturerDashboard() {
                       control={editForm.control}
                       name="what_you_will_learn"
                       label="What You Will Learn"
-                          placeholder="Enter a learning outcome"
+                      placeholder="Enter a learning outcome"
                     />
 
-                    {/* Requirements */}
+                    {/* ingredients */}
                     <ArrayField
                       control={editForm.control}
-                      name="requirements"
-                      label="Requirements"
+                      name="ingredients"
+                      label="ingredients"
                       placeholder="Enter a requirement"
                     />
 
-                    {/* Target Audience */}
-                    <ArrayField
-                      control={editForm.control}
-                      name="who_is_this_course_for"
-                      label="Who Is This Course For"
-                      placeholder="Enter target audience"
-                    />
+
 
                     <DialogFooter>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              onClick={() => {
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => {
                           setEditDialogOpen(false);
                           setCourseToEdit(null);
                           setSelectedFile(null);
                           setFilePreview(null);
-                              }}
+                        }}
                         disabled={isEditing}
                       >
                         Cancel
-                            </Button>
+                      </Button>
                       <Button type="submit" disabled={isEditing}>
                         {isEditing ? "Updating..." : "Update Course"}
-                    </Button>
+                      </Button>
                     </DialogFooter>
-                </form>
-              </Form>
+                  </form>
+                </Form>
               </DialogContent>
             </Dialog>
           </div>
-            </CardHeader>
+        </CardHeader>
 
-            <CardContent>
-              <div className="rounded-md border">
+        <CardContent>
+          <div className="rounded-md border">
             <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-border">
-                  <thead>
-                    <tr className="bg-muted/50">
-                      <th className="px-4 py-3 text-left text-sm font-medium">Course</th>
+              <table className="min-w-full divide-y divide-border">
+                <thead>
+                  <tr className="bg-muted/50">
+                    <th className="px-4 py-3 text-left text-sm font-medium">Course</th>
                     <th className="px-4 py-3 text-left text-sm font-medium">Level</th>
                     <th className="px-4 py-3 text-left text-sm font-medium">Price (TZS)</th>
                     <th className="px-4 py-3 text-left text-sm font-medium">Hours</th>
@@ -1024,20 +1012,20 @@ export default function LecturerDashboard() {
                     <th className="px-4 py-3 text-left text-sm font-medium">Created</th>
                     <th className="px-4 py-3 text-left text-sm font-medium">Last Updated</th>
                     <th className="px-4 py-3 text-left text-sm font-medium">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border bg-background">
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border bg-background">
                   {courses.length === 0 ? (
-                      <tr>
+                    <tr>
                       <td colSpan={8} className="px-4 py-8 text-center text-sm text-muted-foreground">
                         <div className="flex flex-col items-center space-y-2">
                           <BookOpen className="h-8 w-8 text-muted-foreground/50" />
                           <p>No courses created yet</p>
                           <p className="text-xs">Create your first course to get started</p>
                         </div>
-                        </td>
-                      </tr>
-                    ) : (
+                      </td>
+                    </tr>
+                  ) : (
                     courses.map((course) => (
 
                       <tr key={course.id} className="hover:bg-muted/20">
@@ -1094,8 +1082,8 @@ export default function LecturerDashboard() {
                                   level: course.level,
                                   hours: course.hours,
                                   what_you_will_learn: course.what_you_will_learn,
-                                  requirements: course.requirements,
-                                  who_is_this_course_for: course.who_is_this_course_for
+                                  ingredients: course.ingredients,
+                              
                                 });
                                 setFilePreview(course.image_url);
                                 setEditDialogOpen(true);
@@ -1140,15 +1128,15 @@ export default function LecturerDashboard() {
 
                           </div>
                         </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
             </div>
-              </div>
-            </CardContent>
-          </Card>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
