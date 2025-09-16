@@ -77,6 +77,7 @@ function CoursePage({ params }: { params: { id: string } }) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedChapter, setSelectedChapter] = useState<CourseChapter | null>(null);
   const [selectedContent, setSelectedContent] = useState<CourseChapter['items'][0] | null>(null);
+  const [activeTab, setActiveTab] = useState<'description' | 'ingredients' | 'discussion'>('description');
 
   const [students, setStudents] = useState<any[]>([]);
   const [studentsLoading, setStudentsLoading] = useState(true);
@@ -385,21 +386,60 @@ function CoursePage({ params }: { params: { id: string } }) {
           </Button>
         </div>
 
-        {/* Top Banner: Course Image */}
+        {/* Top Banner: Dynamic Video Player */}
         <div className="relative rounded-lg overflow-hidden mb-8 border">
-          <Image
-            src={course_data.image_url || '/placeholder-course.jpg'}
-            alt={course_data.title || 'Course banner'}
-            width={1600}
-            height={600}
-            className="w-full h-[360px] md:h-[420px] object-cover"
-            priority
-          />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-20 h-20 rounded-full bg-white/90 backdrop-blur flex items-center justify-center shadow">
-              <Play className="w-10 h-10 text-orange-600" />
+          {isEnrolled && selectedContent && selectedContent.type === "video" && selectedContent.video_url ? (
+            (() => {
+              const videoId = getYouTubeVideoId(selectedContent.video_url);
+              return videoId ? (
+                <iframe
+                  width="100%"
+                  height="420"
+                  src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
+                  title={selectedContent.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-[360px] md:h-[420px] rounded-lg"
+                />
+              ) : (
+                <div className="w-full h-[360px] md:h-[420px] bg-muted flex items-center justify-center">
+                  <div className="text-center text-muted-foreground">
+                    <Play className="w-16 h-16 mx-auto mb-2" />
+                    <p>Invalid Video URL</p>
+                  </div>
+                </div>
+              );
+            })()
+          ) : course_data.introduction_video && course_data.introduction_video.includes("youtube.com") ? (
+            (() => {
+              const videoId = getYouTubeVideoId(course_data.introduction_video);
+              return videoId ? (
+                <iframe
+                  width="100%"
+                  height="420"
+                  src={`https://www.youtube.com/embed/${videoId}`}
+                  title="Introduction Video"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-[360px] md:h-[420px] rounded-lg"
+                />
+              ) : (
+                <div className="w-full h-[360px] md:h-[420px] bg-muted flex items-center justify-center">
+                  <div className="text-center text-muted-foreground">
+                    <Play className="w-16 h-16 mx-auto mb-2" />
+                    <p>Introduction Video</p>
+                  </div>
+                </div>
+              );
+            })()
+          ) : (
+            <div className="w-full h-[360px] md:h-[420px] bg-muted flex items-center justify-center">
+              <div className="text-center text-muted-foreground">
+                <Play className="w-16 h-16 mx-auto mb-2" />
+                <p>Introduction Video</p>
+              </div>
             </div>
-          </div>
+          )}
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left: Modules + Recommendations */}
@@ -407,27 +447,54 @@ function CoursePage({ params }: { params: { id: string } }) {
             {/* Module List */}
             <div className="space-y-2 mb-4">
               <div className="bg-white rounded-lg border">
-                {course_data.chapters.map((chapter, idx) => (
-                  <div key={chapter.id} className="border-b last:border-b-0">
-                    <button
-                      type="button"
-                      className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-muted"
-                      onClick={() => {
-                        if (chapter.items[0]) {
-                          setSelectedChapter(chapter);
-                          setSelectedContent(chapter.items[0]);
-                          setDialogOpen(true);
-                        }
-                      }}
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="w-6 h-6 rounded-full bg-orange-500/10 text-orange-600 flex items-center justify-center text-xs">{idx + 1}</span>
-                        <span className="font-medium">{chapter.title}</span>
-                      </div>
-                      <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                    </button>
-                  </div>
-                ))}
+                <Accordion type="multiple" defaultValue={course_data.chapters.map((_, idx) => `chapter-${idx}`)} className="w-full">
+                  {course_data.chapters.map((chapter, idx) => (
+                    <AccordionItem key={chapter.id} value={`chapter-${idx}`} className="border-b last:border-b-0">
+                      <AccordionTrigger className="px-4 py-3 hover:no-underline">
+                        <div className="flex items-center gap-3">
+                          <span className="w-6 h-6 rounded-full bg-orange-500/10 text-orange-600 flex items-center justify-center text-xs">{idx + 1}</span>
+                          <span className="font-medium">{chapter.title}</span>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-4 pb-3">
+                        <div className="space-y-2">
+                          {chapter.items.map((item) => (
+                            <div
+                              key={item.id}
+                              onClick={() => {
+                                if (isEnrolled) {
+                                  setSelectedChapter(chapter);
+                                  setSelectedContent(item);
+                                }
+                              }}
+                              className={`flex items-center gap-3 p-2 rounded-lg transition-colors ${isEnrolled ? 'hover:bg-muted cursor-pointer' : 'bg-muted cursor-not-allowed opacity-60'} ${selectedContent?.id === item.id ? 'bg-orange-50 border border-orange-200' : ''}`}
+                              title={isEnrolled ? '' : 'You must be enrolled to access this content.'}
+                            >
+                              {item.type === "video" ? (
+                                <Video className="h-4 w-4 text-primary" />
+                              ) : (
+                                <FileTextIcon className="h-4 w-4 text-primary" />
+                              )}
+                              <div className="flex-grow">
+                                <p className="text-sm font-medium">{item.title}</p>
+                                {item.description && (
+                                  <p className="text-xs text-muted-foreground">
+                                    {item.description}
+                                  </p>
+                                )}
+                              </div>
+                              <span className="text-xs text-muted-foreground">
+                                {item.type === "video"
+                                  ? `${item.duration} min`
+                                  : `${item.pages} pages`}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
               </div>
 
               {/* Certificate CTA */}
@@ -476,10 +543,64 @@ function CoursePage({ params }: { params: { id: string } }) {
             {/* Tabs */}
             <div className="border-b mb-4">
               <div className="flex gap-6">
-                <button className="px-2 py-2 border-b-2 border-orange-500 text-sm font-medium">Description</button>
-                <button className="px-2 py-2 text-sm text-muted-foreground">Ingredients</button>
-                <button className="px-2 py-2 text-sm text-muted-foreground">Discussion Forum</button>
+                <button 
+                  onClick={() => setActiveTab('description')}
+                  className={`px-2 py-2 text-sm font-medium ${activeTab === 'description' ? 'border-b-2 border-orange-500' : 'text-muted-foreground'}`}
+                >
+                  Description
+                </button>
+                <button 
+                  onClick={() => setActiveTab('ingredients')}
+                  className={`px-2 py-2 text-sm font-medium ${activeTab === 'ingredients' ? 'border-b-2 border-orange-500' : 'text-muted-foreground'}`}
+                >
+                  Ingredients
+                </button>
+                <button 
+                  onClick={() => setActiveTab('discussion')}
+                  className={`px-2 py-2 text-sm font-medium ${activeTab === 'discussion' ? 'border-b-2 border-orange-500' : 'text-muted-foreground'}`}
+                >
+                  Discussion Forum
+                </button>
               </div>
+            </div>
+
+            {/* Tab Content */}
+            <div className="mb-6">
+              {activeTab === 'description' && (
+                <div>
+                  <h3 className="text-lg font-semibold mb-3">Course Description</h3>
+                  <p className="text-muted-foreground mb-4">{course_data.description}</p>
+                  <div>
+                    <h4 className="font-semibold mb-2">What You'll Learn:</h4>
+                    <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                      {course_data.what_you_will_learn.map((item, index) => (
+                        <li key={index}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
+              
+              {activeTab === 'ingredients' && (
+                <div>
+                  <h3 className="text-lg font-semibold mb-3">Required Ingredients</h3>
+                  <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                    {course_data.ingredients.map((ingredient, index) => (
+                      <li key={index}>{ingredient}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              
+              {activeTab === 'discussion' && (
+                <div>
+                  <h3 className="text-lg font-semibold mb-3">Discussion Forum</h3>
+                  <p className="text-muted-foreground">Join the discussion with other students and instructors.</p>
+                  <div className="mt-4 p-4 bg-muted rounded-lg text-center">
+                    <p className="text-sm text-muted-foreground">Discussion forum coming soon!</p>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Info Row */}
