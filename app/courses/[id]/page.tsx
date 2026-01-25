@@ -580,7 +580,7 @@ function CoursePage({ params }: { params: { id: string } }) {
                   <h3 className="text-lg font-semibold mb-3">Course Description</h3>
                   <p className="text-muted-foreground mb-4">{course_data.description}</p>
                   <div>
-                    <h4 className="font-semibold mb-2">What You'll Learn:</h4>
+                    <h4 className="font-semibold mb-2">What You&apos;ll Learn:</h4>
                     <ul className="list-disc list-inside space-y-1 text-muted-foreground">
                       {course_data.what_you_will_learn.map((item, index) => (
                         <li key={index}>{item}</li>
