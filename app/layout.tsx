@@ -39,7 +39,7 @@ export default function RootLayout({
       <body className="font-sans min-h-screen flex flex-col">
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
@@ -52,7 +52,7 @@ export default function RootLayout({
             </main>
             <Footer />
             <Toaster />
-            <ChatWidget />
+            {/* <ChatWidget /> */}
           </div>
           </UserProvider>
         </ThemeProvider>

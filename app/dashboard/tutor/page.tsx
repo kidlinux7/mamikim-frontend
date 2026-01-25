@@ -35,7 +35,8 @@ interface Course {
   rating?: number;
   what_you_will_learn: string[];
   ingredients: string[];
-
+  who_is_this_course_for: string[];
+  requirements: string[];
   updated_at: string;
 
 }
@@ -58,6 +59,8 @@ const courseFormSchema = z.object({
   hours: z.number().min(1, "Hours must be at least 1"),
   what_you_will_learn: z.array(z.string()).min(1, "Add at least one learning outcome"),
   ingredients: z.array(z.string()).min(1, "Add at least one requirement"),
+  who_is_this_course_for: z.array(z.string()).min(1, "Add at least one requirement"),
+  requirements: z.array(z.string()).min(1, "Add at least one requirement"),
 
 });
 
@@ -171,6 +174,8 @@ export default function LecturerDashboard() {
       hours: 1,
       what_you_will_learn: [""],
       ingredients: [""],
+      who_is_this_course_for: [""],
+      requirements: [""]
 
     }
   });
@@ -187,6 +192,8 @@ export default function LecturerDashboard() {
       hours: 1,
       what_you_will_learn: [""],
       ingredients: [""],
+      who_is_this_course_for: [""],
+      requirements: [""]
 
     }
   });
@@ -376,6 +383,8 @@ export default function LecturerDashboard() {
           instructor_id: user.id,
           what_you_will_learn: data.what_you_will_learn,
           ingredients: data.ingredients,
+          who_is_this_course_for: data.who_is_this_course_for,
+           requirements: data.ingredients
 
         });
 
@@ -432,6 +441,8 @@ export default function LecturerDashboard() {
           image_url: imageUrl,
           what_you_will_learn: data.what_you_will_learn,
           ingredients: data.ingredients,
+          who_is_this_course_for: data.who_is_this_course_for,
+           requirements: data.ingredients,
 
           updated_at: new Date().toISOString()
         })
