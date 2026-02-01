@@ -21,6 +21,8 @@ interface Course {
   created_at: string;
 }
 
+import { CourseFilters } from "@/components/CourseFilters";
+
 export default function CoursesPage() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
@@ -79,6 +81,12 @@ export default function CoursesPage() {
     }
     fetchCoursesAndEnrollments();
   }, []);
+
+  const clearFilters = () => {
+    setSearchQuery("");
+    setLevelFilter("Latest");
+    setDurationFilter("All");
+  };
 
   // Filtering logic
   const filteredCourses = courses
@@ -151,18 +159,31 @@ export default function CoursesPage() {
 
   return (
     <div className="container mx-auto py-16 px-4">
-      <section className="py-20 bg-gray-0">
+      <section className="py-20 bg-gray-50/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header Section */}
           <div className="mb-12">
             <div className="flex items-center mb-2">
               <div className="w-8 h-0.5 bg-orange-500 mr-3"></div>
-              <span className="text-sm text-gray-500">Find Perfect one</span>
+              <span className="text-sm font-semibold text-orange-600 uppercase tracking-widest">Find your path</span>
             </div>
-            <h2 className="text-4xl font-bold text-gray-800 mb-8">
-              Choose your perfect one and Enroll
+            <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">
+              Build your future with Mamikim
             </h2>
+            <p className="text-lg text-gray-600 max-w-2xl">
+              Explore our curated selection of high-quality courses designed to help you master new skills and advance your career.
+            </p>
           </div>
+
+          <CourseFilters
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            levelFilter={levelFilter}
+            setLevelFilter={setLevelFilter}
+            durationFilter={durationFilter}
+            setDurationFilter={setDurationFilter}
+            onClear={clearFilters}
+          />
 
           {/* Course Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
@@ -233,8 +254,8 @@ export default function CoursesPage() {
 
                     {/* Description */}
                     <p className="text-gray-500 text-sm mb-4">
-                      {course.description.length > 100 
-                        ? `${course.description.substring(0, 100)}...` 
+                      {course.description.length > 100
+                        ? `${course.description.substring(0, 100)}...`
                         : course.description}
                     </p>
 
@@ -255,14 +276,14 @@ export default function CoursesPage() {
           </div>
 
           {/* Pagination */}
-          <div className="flex justify-center space-x-2">
+          {/* <div className="flex justify-center space-x-2">
             <button className="w-10 h-10 border-2 border-gray-300 rounded-full flex items-center justify-center hover:border-orange-500 transition-colors">
               <ArrowRight className="h-4 w-4 text-gray-400 rotate-180" />
             </button>
             <button className="w-10 h-10 bg-orange-500 border-2 border-orange-500 rounded-full flex items-center justify-center">
               <ArrowRight className="h-4 w-4 text-white" />
             </button>
-          </div>
+          </div> */}
         </div>
       </section>
     </div>

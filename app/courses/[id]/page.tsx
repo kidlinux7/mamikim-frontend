@@ -507,10 +507,10 @@ function CoursePage({ params }: { params: { id: string } }) {
               </div>
 
               {/* Certificate CTA */}
-              <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 flex items-center justify-between">
+              {/* <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 flex items-center justify-between">
                 <div className="text-sm font-medium text-orange-700">You made it! Get your certificate</div>
                 <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white">Get</Button>
-              </div>
+              </div> */}
             </div>
 
             {/* More course for you */}
@@ -564,12 +564,12 @@ function CoursePage({ params }: { params: { id: string } }) {
                 >
                   Ingredients
                 </button>
-                <button 
+                {/* <button 
                   onClick={() => setActiveTab('discussion')}
                   className={`px-2 py-2 text-sm font-medium ${activeTab === 'discussion' ? 'border-b-2 border-orange-500' : 'text-muted-foreground'}`}
                 >
                   Discussion Forum
-                </button>
+                </button> */}
               </div>
             </div>
 
@@ -601,7 +601,7 @@ function CoursePage({ params }: { params: { id: string } }) {
                 </div>
               )}
               
-              {activeTab === 'discussion' && (
+              {/* {activeTab === 'discussion' && (
                 <div>
                   <h3 className="text-lg font-semibold mb-3">Discussion Forum</h3>
                   <p className="text-muted-foreground">Join the discussion with other students and instructors.</p>
@@ -609,7 +609,7 @@ function CoursePage({ params }: { params: { id: string } }) {
                     <p className="text-sm text-muted-foreground">Discussion forum coming soon!</p>
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
 
             {/* Info Row */}
@@ -643,12 +643,10 @@ function CoursePage({ params }: { params: { id: string } }) {
               <h2 className="text-2xl font-semibold mb-3">What about it?</h2>
               <p className="text-muted-foreground mb-4">{course_data.description}</p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="relative w-full h-56 rounded-lg overflow-hidden border">
+                {/* <div className="relative w-full h-56 rounded-lg overflow-hidden border">
                   <Image src={course_data.image_url || '/placeholder-course.jpg'} alt="course" fill style={{ objectFit: 'cover' }} />
-                </div>
-                <div className="relative w-full h-56 rounded-lg overflow-hidden border">
-                  <Image src={course_data.image_url || '/placeholder-course.jpg'} alt="course" fill style={{ objectFit: 'cover' }} />
-                </div>
+                </div> */}
+
               </div>
             </div>
           </div>

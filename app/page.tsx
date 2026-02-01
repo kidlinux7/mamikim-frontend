@@ -547,9 +547,9 @@ const HomePage = () => {
       </section>
 
       {/* Events Section */}
-      <section className="py-20 bg-gray-50">
+      {/* <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
+      
           <div className="mb-12">
             <div className="flex items-center justify-center mb-2">
               <div className="w-8 h-0.5 bg-orange-500 mr-3"></div>
@@ -560,9 +560,8 @@ const HomePage = () => {
             </h2>
           </div>
 
-          {/* Event Cards */}
+          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Event Card 1 */}
             <div className="bg-white rounded-xl shadow-lg overflow-hidden">
               <div className="relative">
                 <div className="w-full h-48 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
@@ -597,50 +596,14 @@ const HomePage = () => {
                 </div>
               </div>
             </div>
-
-            {/* Event Card 2 */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-              <div className="relative">
-                <div className="w-full h-48 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-orange-300 rounded-full flex items-center justify-center mb-2">
-                      <span className="text-orange-600 text-2xl">🥖</span>
-                    </div>
-                    <p className="text-orange-600 text-sm">Baking Workshop</p>
-                  </div>
-                </div>
-                <div className="absolute top-4 left-4 bg-orange-500 text-white px-3 py-1 rounded text-sm font-medium">
-                  27 Set
-                </div>
-              </div>
-              <div className="p-6">
-                <div className="text-orange-500 text-sm font-semibold mb-2">Speaker: Simon Mtabazi</div>
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-lg font-bold text-gray-800">Build your dream bakery career-2022</h3>
-                  <span className="text-gray-500 text-sm">8:00 - 16:00</span>
-                </div>
-                <p className="text-gray-600 text-sm mb-4">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
-                </p>
-                <div className="flex items-center justify-between">
-                  <button className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition-colors font-medium">
-                    Book now
-                  </button>
-                  <div className="flex items-center text-gray-500 text-sm">
-                    <div className="w-4 h-4 bg-gray-300 rounded-full mr-2"></div>
-                    <span>Available (139)</span>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Expert Advisors */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
+      
           <div className="mb-12">
             <div className="flex items-center mb-2">
               <div className="w-8 h-0.5 bg-orange-500 mr-3"></div>
@@ -656,9 +619,8 @@ const HomePage = () => {
             </div>
           </div>
 
-          {/* Teacher Cards */}
+       
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-            {/* Card 1 - CARDU MANYON */}
             <div className="bg-white rounded-xl shadow-lg overflow-hidden">
               <div className="w-full h-48 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
                 <div className="text-center">
@@ -674,49 +636,6 @@ const HomePage = () => {
               </div>
             </div>
 
-            {/* Card 2 - ANAMIKA ISLAM */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-              <div className="w-full h-48 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
-                <div className="text-center">
-                  <div className="w-20 h-20 bg-orange-300 rounded-full flex items-center justify-center mb-2">
-                    <span className="text-orange-600 text-3xl">👩‍🏫</span>
-                  </div>
-                  <p className="text-orange-600 text-sm">Expert Teacher</p>
-                </div>
-              </div>
-              <div className="p-6 bg-white">
-                <h3 className="text-lg font-bold text-gray-800 mb-1">ANAMIKA ISLAM</h3>
-                <p className="text-gray-600 text-sm">Teacher of Mamikim Academy</p>
-              </div>
-            </div>
-
-            {/* Card 3 - KAZI JIHAD (Highlighted) */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-              <div className="w-full h-48 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center relative">
-                <div className="text-center">
-                  <div className="w-20 h-20 bg-orange-300 rounded-full flex items-center justify-center mb-2">
-                    <span className="text-orange-600 text-3xl">👩‍🏫</span>
-                  </div>
-                  <p className="text-orange-600 text-sm">Expert Teacher</p>
-                </div>
-                {/* Social Media Icons */}
-                <div className="absolute top-4 right-4 flex flex-col space-y-1">
-                  <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
-                    <span className="text-white text-xs">f</span>
-                  </div>
-                  <div className="w-6 h-6 bg-blue-400 rounded-full flex items-center justify-center">
-                    <span className="text-white text-xs">t</span>
-                  </div>
-                  <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
-                    <span className="text-white text-xs">⚙</span>
-                  </div>
-                </div>
-              </div>
-              <div className="p-6 bg-orange-500">
-                <h3 className="text-lg font-bold text-white mb-1">KAZI JIHAD</h3>
-                <p className="text-orange-100 text-sm">Teacher of Mamikim Academy</p>
-              </div>
-            </div>
 
             {/* Card 4 - RUBY WATSON */}
             <div className="bg-white rounded-xl shadow-lg overflow-hidden">
@@ -836,9 +755,8 @@ const HomePage = () => {
       </section>
 
       {/* Blog Section */}
-      <section className="py-20 bg-white">
+      {/* <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
           <div className="mb-12">
             <div className="flex items-center justify-center mb-2">
               <div className="w-8 h-0.5 bg-orange-500 mr-3"></div>
@@ -848,10 +766,8 @@ const HomePage = () => {
               Get update from our blog
             </h2>
           </div>
-
-          {/* Blog Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-            {/* Blog Card 1 */}
+
             <div className="bg-white rounded-xl shadow-lg overflow-hidden">
               <div className="w-full h-48 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
                 <div className="text-center">
@@ -867,46 +783,15 @@ const HomePage = () => {
               </div>
             </div>
 
-            {/* Blog Card 2 */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-              <div className="w-full h-48 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-orange-300 rounded-full flex items-center justify-center mb-2">
-                    <span className="text-orange-600 text-2xl">👨‍🍳</span>
-                  </div>
-                  <p className="text-orange-600 text-sm">Baker</p>
-                </div>
-              </div>
-              <div className="p-6">
-                <div className="text-gray-500 text-sm mb-2">Category: Education, Certificate</div>
-                <h3 className="text-lg font-bold text-gray-800 mb-3">From boadrooms to the best bakery in Dar: The story continues</h3>
-              </div>
-            </div>
-
-            {/* Blog Card 3 */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-              <div className="w-full h-48 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-orange-300 rounded-full flex items-center justify-center mb-2">
-                    <span className="text-orange-600 text-2xl">🍪</span>
-                  </div>
-                  <p className="text-orange-600 text-sm">Cookie Decorating</p>
-                </div>
-              </div>
-              <div className="p-6">
-                <div className="text-gray-500 text-sm mb-2">Category: Education, Certificate</div>
-                <h3 className="text-lg font-bold text-gray-800 mb-3">From boadrooms to the best bakery in Dar: Still on the story</h3>
-              </div>
-            </div>
           </div>
 
-          {/* Pagination */}
+      
           <div className="flex justify-center space-x-2">
             <div className="w-8 h-2 bg-orange-500 rounded"></div>
             <div className="w-8 h-2 bg-gray-300 rounded"></div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Company Logos Section */}
       <section className="py-16 bg-white">
