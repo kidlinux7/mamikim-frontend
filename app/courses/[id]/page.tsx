@@ -18,6 +18,7 @@ import { User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase/client";
 import { useUser } from "@/components/UserProvider";
 import { useCallback } from "react";
+import { createClient } from '@supabase/supabase-js';
 
 
 interface CourseChapter {
@@ -54,6 +55,8 @@ interface Course {
   instructor_id: string;
   introduction_video: string;
   price: number;
+  discount: number;
+  free?: boolean;
   level: string | null;
   ingredients: string[];
   what_you_will_learn: string[];
@@ -62,7 +65,6 @@ interface Course {
   total_chapters: number;
   total_duration: number;
   total_lessons: number;
-
 }
 
 function CoursePage({ params }: { params: { id: string } }) {
@@ -121,10 +123,13 @@ function CoursePage({ params }: { params: { id: string } }) {
             image_url,
             instructor_id,
             introduction_video,
+            discount,
             price,
+            free,
             level,
             ingredients,
-            what_you_will_learn
+            what_you_will_learn,
+            who_is_this_course_for
           `)
           .eq("id", params.id)
           .single();
@@ -199,7 +204,7 @@ function CoursePage({ params }: { params: { id: string } }) {
           // introduction_video:courseData.introduction_video || '',
           ingredients: courseData.ingredients || [],
           what_you_will_learn: courseData.what_you_will_learn || [],
-          who_is_this_course_for:  [],
+          who_is_this_course_for: courseData.who_is_this_course_for || [],
           subtitle: courseData.subtitle || "",
           description: courseData.description || "",
           level: courseData.level || "Beginner"
@@ -215,6 +220,35 @@ function CoursePage({ params }: { params: { id: string } }) {
     }
 
     fetchCourse();
+  }, [params.id, supabase]);
+
+  // Fetch enrolled students
+  useEffect(() => {
+    async function fetchStudents() {
+      setStudentsLoading(true);
+      setStudentsError(null);
+      try {
+        const { data, error } = await supabase
+          .from("enrollment")
+          .select(`
+            id,
+            created_at,
+            student:student_id (
+              full_name,
+              email
+            )
+          `)
+          .eq("course_id", params.id)
+          .order("created_at", { ascending: false });
+        if (error) throw error;
+        setStudents(data || []);
+      } catch (err: any) {
+        setStudentsError(err.message || "Failed to fetch students");
+      } finally {
+        setStudentsLoading(false);
+      }
+    }
+    fetchStudents();
   }, [params.id, supabase]);
 
   // Recommendations (3 other courses)
@@ -274,42 +308,137 @@ function CoursePage({ params }: { params: { id: string } }) {
 
 
 
-  // Stripe Enroll Handler
+  // DPO Enroll Handler
   const handleEnroll = async () => {
     if (!user) {
       router.push('/auth/login');
       return;
     }
     if (!course) return;
-    if (course.price === 0) {
-      // Free course: handle enrollment directly (not implemented here)
-      return;
-    }
 
     setEnrollLoading(true);
 
-
     try {
-      console.log(user)
-      const res = await fetch('/api/stripe/checkout-session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          studentId: user.id,
-          courseId: course.id,
-          courseTitle: course.title,
-          price: course.price,
-        }),
-      });
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        alert('Failed to initiate payment.');
+      // Check if course is free
+      if (course.free || course.price === 0) {
+
+        // Initialize Admin Client for DB operations (Bypasses RLS)
+        const supabaseAdmin = createClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY!,
+          {
+            auth: {
+              autoRefreshToken: false,
+              persistSession: false
+            }
+          }
+        );
+
+
+        // 2. Fetch course details to verify it is free
+        const { data: verifiedCourse, error: courseError } = await supabaseAdmin
+          .from('courses')
+          .select('id, price, free, title')
+          .eq('id', course.id)
+          .single();
+
+        if (courseError || !verifiedCourse) {
+          alert('Course not found');
+          return;
+        }
+
+        // 3. Verify the course is actually free
+        const isFree = verifiedCourse.free === true || verifiedCourse.price === 0;
+        if (!isFree) {
+          alert('This course is not free. Payment required.');
+          return;
+        }
+
+        // 4. Check if already enrolled
+        const { data: existingEnrollment } = await supabaseAdmin
+          .from('enrollment')
+          .select('id')
+          .eq('course_id', course.id)
+          .eq('student_id', user.id)
+          .maybeSingle();
+
+        if (existingEnrollment) {
+          alert('Already enrolled');
+          return;
+        }
+
+        // 5. Create a "free" transaction record
+        const { data: transaction, error: txError } = await supabaseAdmin
+          .from('transactions')
+          .insert({
+            course_id: course.id,
+            student_id: user.id,
+            price: 0,
+            currency: 'TZS',
+            payment_status: 'completed',
+            transaction_token: `free_${Date.now()}_${Math.random().toString(36).substring(7)}`,
+            email: user?.email,
+            payment_method: 'free_enrollment',
+            transaction_reference: `FREE-${course.id}-${user.id}-${Date.now()}`,
+          })
+          .select()
+          .single();
+
+        if (txError) {
+          console.error('Transaction creation failed:', txError);
+          alert('Failed to process enrollment');
+          return;
+        }
+
+        // 6. Create enrollment record
+        const { error: enrollError } = await supabaseAdmin
+          .from('enrollment')
+          .insert({
+            course_id: course.id,
+            student_id: user.id,
+            transaction_id: transaction.id,
+          });
+
+        if (enrollError) {
+          console.error('Enrollment creation failed:', enrollError);
+          alert('Failed to create enrollment');
+          return;
+        }
+
+        window.location.reload();
+
       }
-    } catch (err) {
-      alert('Payment error.');
-    } 
+      else {
+        // Paid Course Flow
+        const djangoURL = process.env.NEXT_PUBLIC_DJANGO_BASE_URL;
+        const res = await fetch(`${djangoURL}/payments/create-transaction/`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            reference: `REF${course.id}-${user.id}-${Date.now()}`,
+            amount: course.price - (course.discount || 0),
+            currency: 'TZS',
+            studentId: user.id,
+            courseId: course.id,
+            description: course.title,
+            customer_email: user?.email,
+            customer_phone: user?.phone,
+          }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          window.location.href = data.data.payment_url;
+        } else {
+          alert('Failed to initiate payment.');
+        }
+      }
+
+    } catch (err: any) {
+      console.error(err);
+      alert(err.message || 'Payment/Enrollment error.');
+    } finally {
+      setEnrollLoading(false);
+    }
   };
 
   if (loading) {
@@ -319,13 +448,13 @@ function CoursePage({ params }: { params: { id: string } }) {
           <div className="animate-pulse space-y-8">
             <div className="h-8 bg-muted rounded w-3/4"></div>
             <div className="h-4 bg-muted rounded w-1/2"></div>
-            
+
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               <div className="lg:col-span-2 space-y-4">
                 <div className="h-80 bg-muted rounded"></div>
                 <div className="h-40 bg-muted rounded"></div>
               </div>
-      
+
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -390,35 +519,62 @@ function CoursePage({ params }: { params: { id: string } }) {
               <p className="text-sm text-muted-foreground">{course_data.subtitle}</p>
             )}
           </div>
-          <Button onClick={handleEnroll} className="bg-orange-500 hover:bg-orange-600 text-white">
-            Enroll now
+          <Button
+            onClick={handleEnroll}
+            disabled={enrollLoading || enrollStatusLoading || isEnrolled}
+            className="bg-orange-500 hover:bg-orange-600 text-white"
+          >
+            {enrollStatusLoading
+              ? 'Checking...'
+              : isEnrolled
+                ? 'Enrolled'
+                : enrollLoading
+                  ? 'Processing...'
+                  : (course_data.free || course_data.price === 0)
+                    ? 'Enroll for Free'
+                    : 'Enroll now'}
           </Button>
         </div>
 
         {/* Top Banner: Dynamic Video Player */}
         <div className="relative rounded-lg overflow-hidden mb-8 border">
-          {isEnrolled && selectedContent && selectedContent.type === "video" && selectedContent.video_url ? (
-            (() => {
-              const videoId = getYouTubeVideoId(selectedContent.video_url);
-              return videoId ? (
-                <iframe
-                  width="100%"
-                  height="420"
-                  src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
-                  title={selectedContent.title}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="w-full h-[360px] md:h-[420px] rounded-lg"
-                />
-              ) : (
-                <div className="w-full h-[360px] md:h-[420px] bg-muted flex items-center justify-center">
-                  <div className="text-center text-muted-foreground">
-                    <Play className="w-16 h-16 mx-auto mb-2" />
-                    <p>Invalid Video URL</p>
+          {isEnrolled && selectedContent ? (
+            selectedContent.type === "video" && selectedContent.video_url ? (
+              (() => {
+                const videoId = getYouTubeVideoId(selectedContent.video_url);
+                return videoId ? (
+                  <iframe
+                    width="100%"
+                    height="420"
+                    src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
+                    title={selectedContent.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="w-full h-[360px] md:h-[420px] rounded-lg"
+                  />
+                ) : (
+                  <div className="w-full h-[360px] md:h-[420px] bg-muted flex items-center justify-center">
+                    <div className="text-center text-muted-foreground">
+                      <Play className="w-16 h-16 mx-auto mb-2" />
+                      <p>Invalid Video URL</p>
+                    </div>
                   </div>
+                );
+              })()
+            ) : selectedContent.type === "document" && selectedContent.file_url ? (
+              <iframe
+                src={selectedContent.file_url}
+                title={selectedContent.title}
+                className="w-full h-[360px] md:h-[600px] rounded-lg border-none"
+              />
+            ) : (
+              <div className="w-full h-[360px] md:h-[420px] bg-muted flex items-center justify-center">
+                <div className="text-center text-muted-foreground">
+                  <Play className="w-16 h-16 mx-auto mb-2" />
+                  <p>No preview available</p>
                 </div>
-              );
-            })()
+              </div>
+            )
           ) : course_data.introduction_video && course_data.introduction_video.includes("youtube.com") ? (
             (() => {
               const videoId = getYouTubeVideoId(course_data.introduction_video);
@@ -544,21 +700,33 @@ function CoursePage({ params }: { params: { id: string } }) {
                   <p className="text-sm text-muted-foreground">{course_data.subtitle}</p>
                 )}
               </div>
-              <Button onClick={handleEnroll} className="bg-orange-500 hover:bg-orange-600 text-white">
-                Enroll now
+              <Button
+                onClick={handleEnroll}
+                disabled={enrollLoading || enrollStatusLoading || isEnrolled}
+                className="bg-orange-500 hover:bg-orange-600 text-white"
+              >
+                {enrollStatusLoading
+                  ? 'Checking...'
+                  : isEnrolled
+                    ? 'Enrolled'
+                    : enrollLoading
+                      ? 'Processing...'
+                      : (course_data.free || course_data.price === 0)
+                        ? 'Enroll for Free'
+                        : 'Enroll now'}
               </Button>
             </div>
 
             {/* Tabs */}
             <div className="border-b mb-4">
               <div className="flex gap-6">
-                <button 
+                <button
                   onClick={() => setActiveTab('description')}
                   className={`px-2 py-2 text-sm font-medium ${activeTab === 'description' ? 'border-b-2 border-orange-500' : 'text-muted-foreground'}`}
                 >
                   Description
                 </button>
-                <button 
+                <button
                   onClick={() => setActiveTab('ingredients')}
                   className={`px-2 py-2 text-sm font-medium ${activeTab === 'ingredients' ? 'border-b-2 border-orange-500' : 'text-muted-foreground'}`}
                 >
@@ -589,7 +757,7 @@ function CoursePage({ params }: { params: { id: string } }) {
                   </div>
                 </div>
               )}
-              
+
               {activeTab === 'ingredients' && (
                 <div>
                   <h3 className="text-lg font-semibold mb-3">Required Ingredients</h3>
@@ -600,7 +768,7 @@ function CoursePage({ params }: { params: { id: string } }) {
                   </ul>
                 </div>
               )}
-              
+
               {/* {activeTab === 'discussion' && (
                 <div>
                   <h3 className="text-lg font-semibold mb-3">Discussion Forum</h3>
