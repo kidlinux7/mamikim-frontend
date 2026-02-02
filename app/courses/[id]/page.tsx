@@ -414,6 +414,7 @@ function CoursePage({ params }: { params: { id: string } }) {
         const clickPesaClientID = process.env.NEXT_PUBLIC_CLICK_PESA_CLIENT_ID;
         const clickPesaAPIKey = process.env.NEXT_PUBLIC_CLICK_PESA_API_KEY;
 
+
         // 1. Generate ClickPesa Authorization Token
         const tokenRes = await fetch(`${clickPesaURL}/generate-token`, {
           method: 'POST',
@@ -449,9 +450,9 @@ function CoursePage({ params }: { params: { id: string } }) {
         });
 
         const paymentData = await paymentRes.json();
-        console.log(paymentData);
+        // console.log(paymentData);
         if (paymentData.payoutLink !== null) {
-          window.location.href = paymentData.payoutLink;
+          // window.location.href = paymentData.payoutLink;
           // The response should be a url to redirect the user to payments page to check status
         } else {
           alert('Failed to initiate payment.');
