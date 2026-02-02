@@ -452,6 +452,7 @@ function CoursePage({ params }: { params: { id: string } }) {
         console.log(paymentData);
         if (paymentData.payoutLink !== null) {
           window.location.href = paymentData.payoutLink;
+          // The response should be a url to redirect the user to payments page to check status
         } else {
           alert('Failed to initiate payment.');
         }
@@ -459,7 +460,7 @@ function CoursePage({ params }: { params: { id: string } }) {
 
     } catch (err: any) {
       console.error(err);
-      alert(err.message || 'Payment/Enrollment error.');
+      alert(err.message || 'Payment error.');
     } finally {
       setEnrollLoading(false);
     }
