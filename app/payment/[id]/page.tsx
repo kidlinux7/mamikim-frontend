@@ -11,11 +11,6 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useUser } from "@/components/UserProvider";
 import { createClient } from "@supabase/supabase-js";
 
-// This is a client component, but we can still set title/meta via Metadata in Next 13 
-// Or just include it in the component for simpler implementation if using app dir.
-// However, app dir usually wants export const metadata in a layout or page.
-// Since this is "use client", we'll just stick to a good h1 tag.
-
 function PaymentStatusContent() {
     const searchParams = useSearchParams();
     const params = useParams();
