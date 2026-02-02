@@ -416,12 +416,12 @@ function CoursePage({ params }: { params: { id: string } }) {
 
 
         // 1. Generate ClickPesa Authorization Token
-        const tokenRes = await fetch(`${clickPesaURL}/generate-token`, {
+        const tokenRes = await fetch(`${process.env.NEXT_PUBLIC_CLICK_PESA_URL}/generate-token`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'client-id': `${clickPesaClientID}`,
-            'api-key': `${clickPesaAPIKey}`,
+            'client-id': `${process.env.NEXT_PUBLIC_CLICK_PESA_CLIENT_ID}`,
+            'api-key': `${process.env.NEXT_PUBLIC_CLICK_PESA_API_KEY}`,
           },
           body: JSON.stringify({}),
         });
@@ -436,7 +436,7 @@ function CoursePage({ params }: { params: { id: string } }) {
         const reference = `REF${course.id}-${user.id}-${Date.now()}`; 
 
         // 2. Create ClickPesa Payment Link
-        const paymentRes = await fetch(`${clickPesaURL}/checkout-link/generate-checkout-url`, {
+        const paymentRes = await fetch(`${process.env.NEXT_PUBLIC_CLICK_PESA_URL}/checkout-link/generate-checkout-url`, {
           method: 'POST',
           headers: {
             'Authorization': bearerToken,
