@@ -436,23 +436,27 @@ function CoursePage({ params }: { params: { id: string } }) {
         const reference = `REF${course.id}-${user.id}-${Date.now()}`; 
 
         // 2. Create ClickPesa Payment Link
-        const paymentRes = await fetch(`${clickPesaURL}/payout-link/generate-payout-url`, {
+        const paymentRes = await fetch(`${clickPesaURL}/checkout-link/generate-checkout-url`, {
           method: 'POST',
           headers: {
             'Authorization': bearerToken,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            amount: course.price,
+            totalPrice: course.price,
             orderReference: reference.replace(/[^a-zA-Z0-9]/g, ''),
+            orderCurrency: 'TZS',
+            customerName: user.user_metadata.full_name,
+            customerEmail: user.email,
+            customerPhone: user.user_metadata.phone,
+            description: course.title,
             checksum:''
           }),
         });
 
         const paymentData = await paymentRes.json();
-        // console.log(paymentData);
-        if (paymentData.payoutLink !== null) {
-          // window.location.href = paymentData.payoutLink;
+        if (paymentData.checkoutLink !== null) {
+          window.location.href = paymentData.checkoutLink;
           // The response should be a url to redirect the user to payments page to check status
         } else {
           alert('Failed to initiate payment.');
