@@ -433,7 +433,7 @@ function CoursePage({ params }: { params: { id: string } }) {
         }
 
         const bearerToken = tokenData.token;
-        const reference = `REF${course.id}-${user.id}-${Date.now()}`; 
+        const reference = `REF${course.id}-${user.id}-${Date.now()}`;
 
         // 2. Create ClickPesa Payment Link
         const paymentRes = await fetch(`${process.env.NEXT_PUBLIC_CLICK_PESA_URL}/checkout-link/generate-checkout-url`, {
@@ -450,7 +450,8 @@ function CoursePage({ params }: { params: { id: string } }) {
             customerEmail: user.email,
             customerPhone: user.user_metadata.phone,
             description: course.title,
-            checksum:''
+            redirectUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/payments/${reference.replace(/[^a-zA-Z0-9]/g, '')}?courseId=${course.id}`,
+            checksum: ''
           }),
         });
 

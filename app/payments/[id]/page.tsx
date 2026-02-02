@@ -1,12 +1,15 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle2, XCircle, Home, ArrowRight, RefreshCcw } from "lucide-react";
 import Link from "next/link";
-import { Suspense } from "react";
+import { Suspense, useEffect, useState, useRef } from "react";
 import Head from "next/head";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useUser } from "@/components/UserProvider";
+import { createClient } from "@supabase/supabase-js";
 
 // This is a client component, but we can still set title/meta via Metadata in Next 13 
 // Or just include it in the component for simpler implementation if using app dir.
@@ -15,11 +18,112 @@ import Head from "next/head";
 
 function PaymentStatusContent() {
     const searchParams = useSearchParams();
+    const params = useParams();
     const status = searchParams.get("status");
-    const reference = searchParams.get("transaction_id") || searchParams.get("reference");
+    const reference = searchParams.get("transaction_id") || searchParams.get("reference") || params.id as string;
     const courseId = searchParams.get("courseId");
 
-    const isSuccess = status === "success" || status === "completed";
+    const { user, loading: userLoading } = useUser();
+    const supabaseClient = createClientComponentClient();
+    const [processing, setProcessing] = useState(false);
+    const [processError, setProcessError] = useState<string | null>(null);
+    const enrollmentProcessed = useRef(false);
+
+    const isSuccess = status === "success" || status === "completed" || status === "paid";
+
+    useEffect(() => {
+        async function handleEnrollment() {
+            if (!isSuccess || !user || !courseId || !reference || enrollmentProcessed.current) return;
+
+            setProcessing(true);
+            enrollmentProcessed.current = true;
+
+            try {
+                const supabaseAdmin = createClient(
+                    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+                    process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY!,
+                    {
+                        auth: {
+                            autoRefreshToken: false,
+                            persistSession: false
+                        }
+                    }
+                );
+
+                // 1. Check if already enrolled
+                const { data: existingEnrollment } = await supabaseAdmin
+                    .from('enrollment')
+                    .select('id')
+                    .eq('course_id', courseId)
+                    .eq('student_id', user.id)
+                    .maybeSingle();
+
+                if (existingEnrollment) {
+                    console.log('User already enrolled');
+                    setProcessing(false);
+                    // If already enrolled, wait 2 seconds and redirect
+                    setTimeout(() => {
+                        window.location.href = `/courses/${courseId}`;
+                    }, 2000);
+                    return;
+                }
+
+                // 2. Fetch course price
+                const { data: courseData } = await supabaseAdmin
+                    .from('courses')
+                    .select('price, title')
+                    .eq('id', courseId)
+                    .single();
+
+                // 3. Create transaction record
+                const { data: transaction, error: txError } = await supabaseAdmin
+                    .from('transactions')
+                    .insert({
+                        course_id: courseId,
+                        student_id: user.id,
+                        price: courseData?.price || 0,
+                        currency: 'TZS',
+                        payment_status: 'completed',
+                        transaction_token: reference,
+                        email: user.email,
+                        payment_method: 'clickpesa',
+                        transaction_reference: reference,
+                    })
+                    .select()
+                    .single();
+
+                if (txError) throw txError;
+
+                // 4. Create enrollment record
+                const { error: enrollError } = await supabaseAdmin
+                    .from('enrollment')
+                    .insert({
+                        course_id: courseId,
+                        student_id: user.id,
+                        transaction_id: transaction.id,
+                    });
+
+                if (enrollError) throw enrollError;
+
+                console.log('Enrollment successful');
+
+                // Automatic redirect after success
+                setTimeout(() => {
+                    window.location.href = `/courses/${courseId}`;
+                }, 3000);
+
+            } catch (err: any) {
+                console.error('Error processing enrollment:', err);
+                setProcessError(err.message || 'Failed to complete enrollment');
+            } finally {
+                setProcessing(false);
+            }
+        }
+
+        if (!userLoading && user && isSuccess) {
+            handleEnrollment();
+        }
+    }, [isSuccess, user, userLoading, courseId, reference]);
 
     return (
         <div className="min-h-[80vh] flex items-center justify-center p-4">
@@ -56,9 +160,16 @@ function PaymentStatusContent() {
                     <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100">
                         <p className="text-slate-600 leading-relaxed text-sm">
                             {isSuccess
-                                ? "Your payment was successful. We've sent a confirmation email your way. You now have full access to the course content."
+                                ? processing
+                                    ? "Processing your enrollment... please wait."
+                                    : "Your payment was successful. We've sent a confirmation email your way. You now have full access to the course content."
                                 : "The transaction was unsuccessful. This could be due to insufficient funds, an expired card, or a temporary network issue."}
                         </p>
+                        {processError && (
+                            <p className="mt-2 text-red-500 text-xs font-medium">
+                                Error: {processError}
+                            </p>
+                        )}
                         {reference && (
                             <div className="mt-4 pt-4 border-t border-slate-200">
                                 <span className="text-[10px] uppercase font-bold tracking-widest text-slate-400 block mb-1">Transaction Reference</span>
