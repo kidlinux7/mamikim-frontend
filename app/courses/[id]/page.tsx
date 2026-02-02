@@ -410,24 +410,48 @@ function CoursePage({ params }: { params: { id: string } }) {
       }
       else {
         // Paid Course Flow
-        const djangoURL = process.env.NEXT_PUBLIC_DJANGO_BASE_URL;
-        const res = await fetch(`${djangoURL}/payments/create-transaction/`, {
+        const clickPesaURL = process.env.NEXT_PUBLIC_CLICK_PESA_URL;
+        const clickPesaClientID = process.env.NEXT_PUBLIC_CLICK_PESA_CLIENT_ID;
+        const clickPesaAPIKey = process.env.NEXT_PUBLIC_CLICK_PESA_API_KEY;
+
+        // 1. Generate ClickPesa Authorization Token
+        const tokenRes = await fetch(`${clickPesaURL}/generate-token`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'client-id': `${clickPesaClientID}`,
+            'api-key': `${clickPesaAPIKey}`,
+          },
+          body: JSON.stringify({}),
+        });
+
+        const tokenData = await tokenRes.json();
+        if (!tokenData.success) {
+          alert('Failed to initiate payment.');
+          return;
+        }
+
+        const bearerToken = tokenData.token;
+        const reference = `REF${course.id}-${user.id}-${Date.now()}`; 
+
+        // 2. Create ClickPesa Payment Link
+        const paymentRes = await fetch(`${clickPesaURL}/payout-link/generate-payout-url`, {
+          method: 'POST',
+          headers: {
+            'Authorization': bearerToken,
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify({
-            reference: `REF${course.id}-${user.id}-${Date.now()}`,
-            amount: course.price - (course.discount || 0),
-            currency: 'TZS',
-            studentId: user.id,
-            courseId: course.id,
-            description: course.title,
-            customer_email: user?.email,
-            customer_phone: user?.phone,
+            amount: course.price,
+            orderReference: reference.replace(/[^a-zA-Z0-9]/g, ''),
+            checksum:''
           }),
         });
-        const data = await res.json();
-        if (data.success) {
-          window.location.href = data.data.payment_url;
+
+        const paymentData = await paymentRes.json();
+        console.log(paymentData);
+        if (paymentData.payoutLink !== null) {
+          window.location.href = paymentData.payoutLink;
         } else {
           alert('Failed to initiate payment.');
         }
