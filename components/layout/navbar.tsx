@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { ChevronDown, Menu, X } from 'lucide-react';
-import { FaMapMarker, FaPhoneAlt, FaTwitter, FaUserAlt } from "react-icons/fa";
-import { BsInstagram } from 'react-icons/bs';
+import { ChevronDown, Link, Menu, X } from 'lucide-react';
+import { FaInstagram, FaMapMarker, FaPhoneAlt, FaTwitter, FaUserAlt } from "react-icons/fa";
+import { BsInstagram, BsTiktok } from 'react-icons/bs';
 import { FaCartShopping, FaSquareFacebook } from 'react-icons/fa6';
 import { SiYoutube } from 'react-icons/si';
 import { IoLogIn } from 'react-icons/io5';
@@ -63,7 +63,6 @@ const Navbar = () => {
     { name: "Courses", href: "/courses" },
     { name: "Private-class", href: "/private-class" },
     { name: "Translations", href: "/translations" },
-
     { name: "Events", href: "/events" },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
@@ -81,20 +80,25 @@ const Navbar = () => {
             <div className="flex items-center space-x-6">
               <div className="flex items-center">
                 <span className="mr-2"><FaMapMarker /></span>
-                <span>Masaki, Dar Es Salaam</span>
+                <span>4 Mbaraka Mwinshee ,Mbezi Beach, DSM</span>
               </div>
               <div className="flex items-center">
                 <span className="mr-2"><FaPhoneAlt /></span>
-                <span>Call Us: +255 787 249 681</span>
+                <span>Call Us: +255 757 798 155</span>
               </div>
             </div>
             <div className="flex items-center space-x-4 mt-2 sm:mt-0">
               <span>We&apos;re active on</span>
               <div className="flex space-x-2">
-                <BsInstagram />
-                <FaSquareFacebook />
-                <SiYoutube />
-                <FaTwitter />
+                <a target='_blank' href="https://www.instagram.com/mamikimcakeacademy?igsh=dnpmdWl4bXM5MTFj">
+                  <BsTiktok />
+                </a>
+                <a target='_blank' href="https://youtube.com/@mamikimcakeacademy2130?si=pH7mNyZPtu4BQsfs">
+                  <SiYoutube />
+                 </a>
+                <a target='_blank' href="https://www.instagram.com/mamikimcakeacademy?igsh=dnpmdWl4bXM5MTFj">
+                  <FaInstagram />
+                </a>
               </div>
               <div className="flex items-center space-x-4 ml-4">
 

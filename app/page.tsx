@@ -34,7 +34,7 @@ const HomePage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
 
-    // Filter states
+  // Filter states
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [levelFilter, setLevelFilter] = useState<string>("Latest");
@@ -44,28 +44,28 @@ const HomePage = () => {
     {
       icon: <FaMapMarker className="text-orange-500" />,
       title: "Free Register & Intership",
-      description: "Esse mauris arcu eveniet in. Qua hendrerit. Risus! Deleniti",
+      description: "Whether you're looking to master baking skills, volunteer, or work with us, we're here for you.",
       link: "#",
       dark: false
     },
     {
       icon: <FaPeopleGroup className="text-orange-500" />,
-      title: "Free Online Learning offer",
-      description: "Esse mauris arcu eveniet in. Qua hendrerit. Risus! Deleniti",
+      title: "Our Courses",
+      description: "Ready to turn your passion for baking into a skill? Join our courses and learn from the best.",
       link: "#",
       dark: true
     },
     {
       icon: <FaMapMarker className="text-orange-500" />,
-      title: "Dream and get that Dough",
-      description: "Esse mauris arcu eveniet in. Qua hendrerit. Risus! Deleniti",
+      title: "Shop and get the best ingredients and tools",
+      description: "Need the best ingredients and tools to take your baking to the next level? Shop with us! ",
       link: "#",
       dark: false
-    }, 
+    },
     {
       icon: <FaMapMarker className="text-orange-500" />,
-      title: "Get certificates",
-      description: "Esse mauris arcu eveniet in. Qua hendrerit. Risus! Deleniti",
+      title: "Order your Cakes and Bites",
+      description: "Indulging in something sweet? Whether it&apos;s a birthday, wedding or just a craving, we&apos;ve got the perfect cake and bites for you. ",
       link: "#",
       dark: false
     },
@@ -73,9 +73,9 @@ const HomePage = () => {
 
 
   const stats = [
-    { number: "560+", label: "Expert Tutors" },
-    { number: "580+", label: "Happy Students" },
-    { number: "540+", label: "Live Classes" },
+    { number: "300+", label: "Successful Courses" },
+    { number: "6000+", label: "Happy Students" },
+    { number: "200+", label: "Certificates Given" },
     { number: "580+", label: "Video Courses" }
   ];
 
@@ -182,8 +182,8 @@ const HomePage = () => {
     }
   ];
 
-    // Enrollment counts: { [course_id]: count }
-    const [enrollmentCounts, setEnrollmentCounts] = useState<{ [key: string]: number }>({});
+  // Enrollment counts: { [course_id]: count }
+  const [enrollmentCounts, setEnrollmentCounts] = useState<{ [key: string]: number }>({});
 
 
   useEffect(() => {
@@ -238,39 +238,39 @@ const HomePage = () => {
 
   }, []);
 
-    // Filtering logic
-    // const filteredCourses = courses
-    // .filter((course) => {
-    //   // Search filter
-    //   if (searchQuery.trim() !== "") {
-    //     const q = searchQuery.toLowerCase();
-    //     if (
-    //       !course.title.toLowerCase().includes(q) &&
-    //       !course.description.toLowerCase().includes(q)
-    //     ) {
-    //       return false;
-    //     }
-    //   }
-    //   // Level filter
-    //   if (levelFilter !== "Latest" && levelFilter !== "All") {
-    //     if (course.level.toLowerCase() !== levelFilter.toLowerCase()) {
-    //       return false;
-    //     }
-    //   }
-    //   // Duration filter
-    //   if (durationFilter !== "All") {
-    //     if (durationFilter === "Short" && course.hours >= 5) return false;
-    //     if (durationFilter === "Medium" && (course.hours < 5 || course.hours > 10)) return false;
-    //     if (durationFilter === "Long" && course.hours <= 10) return false;
-    //   }
-    //   return true;
-    // })
-    // .sort((a, b) => {
-    //   if (levelFilter === "Latest") {
-    //     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-    //   }
-    //   return 0;
-    // });
+  // Filtering logic
+  // const filteredCourses = courses
+  // .filter((course) => {
+  //   // Search filter
+  //   if (searchQuery.trim() !== "") {
+  //     const q = searchQuery.toLowerCase();
+  //     if (
+  //       !course.title.toLowerCase().includes(q) &&
+  //       !course.description.toLowerCase().includes(q)
+  //     ) {
+  //       return false;
+  //     }
+  //   }
+  //   // Level filter
+  //   if (levelFilter !== "Latest" && levelFilter !== "All") {
+  //     if (course.level.toLowerCase() !== levelFilter.toLowerCase()) {
+  //       return false;
+  //     }
+  //   }
+  //   // Duration filter
+  //   if (durationFilter !== "All") {
+  //     if (durationFilter === "Short" && course.hours >= 5) return false;
+  //     if (durationFilter === "Medium" && (course.hours < 5 || course.hours > 10)) return false;
+  //     if (durationFilter === "Long" && course.hours <= 10) return false;
+  //   }
+  //   return true;
+  // })
+  // .sort((a, b) => {
+  //   if (levelFilter === "Latest") {
+  //     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+  //   }
+  //   return 0;
+  // });
 
   // if (loading) {
   //   return (
@@ -309,7 +309,7 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-white">
- 
+
       {/* Hero Section */}
       <section className="relative bg-white min-h-screen">
         <div className="absolute inset-0">
@@ -333,12 +333,16 @@ const HomePage = () => {
                 Better Living
               </h1>
               <p className="text-lg text-white-700 leading-relaxed mb-8">
-                Why we are best learning platform in the world? Teaching is done by experienced teachers. Good is taught at a low cost.
+                Turn your passion for baking into a career. Welcome to Mamikim Academy your gateway to a sweet life. Start your baking journey with us and learn the skills to earn a living doing what you love. Let&apos;s get baking
               </p>
-              <button className="bg-orange-500 text-white px-8 py-4 rounded-lg hover:bg-orange-600 transition-colors font-semibold flex items-center">
-                Enroll Course
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </button>
+
+              <a href="/courses" target="_blank">
+                <button className="bg-orange-500 text-white px-8 py-4 rounded-lg hover:bg-orange-600 transition-colors font-semibold flex items-center">
+                  Enroll Course
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </button>
+              </a>
+
 
               {/* Decorative circle element */}
               <div className="absolute right-20 top-1/2 transform -translate-y-1/2 w-32 h-32 rounded-full border-4 border-orange-500 opacity-20 hidden lg:block"></div>
@@ -355,13 +359,15 @@ const HomePage = () => {
               <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
                 {content.icon}
               </div>
-              <h3 className={`${content.dark ? 'text-white':'text-gray-800'} text-lg font-semibold mb-2`}>{content.title}</h3>
-              <p className={`${content.dark ? 'text-white':'text-gray-500'} text-sm font-semibold mb-2`}>{content.description}</p>
+              <h3 className={`${content.dark ? 'text-white' : 'text-gray-800'} text-lg font-semibold mb-2`}>{content.title}</h3>
+              <p className={`${content.dark ? 'text-white' : 'text-gray-500'} text-sm font-semibold mb-2`}>{content.description}</p>
               <div className="mt-4">
-                <button className="text-orange-500 hover:text-orange-600 transition-colors flex items-center">
-                  Get Started
-                  <ArrowRight className="ml-1 h-4 w-4" />
-                </button>
+                <a href='/courses' target='_blank'>
+                  <button className="text-orange-500 hover:text-orange-600 transition-colors flex items-center">
+                    Get Started
+                    <ArrowRight className="ml-1 h-4 w-4" />
+                  </button>
+                </a>
               </div>
             </div>
 
@@ -453,8 +459,8 @@ const HomePage = () => {
 
                     {/* Description */}
                     <p className="text-gray-500 text-sm mb-4">
-                      {course.description.length > 100 
-                        ? `${course.description.substring(0, 100)}...` 
+                      {course.description.length > 100
+                        ? `${course.description.substring(0, 100)}...`
                         : course.description}
                     </p>
 
@@ -490,7 +496,7 @@ const HomePage = () => {
       {/* Stats Section */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
             {/* Card 1 - Successfully Projects */}
             <div className="bg-white rounded-xl shadow-lg p-8 text-center">
               <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -498,8 +504,8 @@ const HomePage = () => {
                   <div className="w-4 h-4 bg-orange-500 rounded-full"></div>
                 </div>
               </div>
-              <div className="text-4xl font-bold text-gray-900 mb-2">560+</div>
-              <div className="text-gray-600">Successfully Projects</div>
+              <div className="text-4xl font-bold text-gray-900 mb-2">300+</div>
+              <div className="text-gray-600">Successfully Courses</div>
             </div>
 
             {/* Card 2 - Happy Students */}
@@ -513,7 +519,7 @@ const HomePage = () => {
                   </div>
                 </div>
               </div>
-              <div className="text-4xl font-bold text-gray-900 mb-2">560+</div>
+              <div className="text-4xl font-bold text-gray-900 mb-2">6000+</div>
               <div className="text-gray-600">Happy Students</div>
             </div>
 
@@ -524,12 +530,12 @@ const HomePage = () => {
                   <div className="w-4 h-4 bg-orange-500 rounded-full"></div>
                 </div>
               </div>
-              <div className="text-4xl font-bold text-gray-900 mb-2">560+</div>
+              <div className="text-4xl font-bold text-gray-900 mb-2">200+</div>
               <div className="text-gray-600">Certificates Given</div>
             </div>
 
             {/* Card 4 - Coffee taken */}
-            <div className="bg-white rounded-xl shadow-lg p-8 text-center">
+            {/* <div className="bg-white rounded-xl shadow-lg p-8 text-center">
               <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <div className="w-8 h-8 border-2 border-orange-500 rounded-full flex items-center justify-center">
                   <div className="flex flex-col space-y-1">
@@ -541,7 +547,7 @@ const HomePage = () => {
               </div>
               <div className="text-4xl font-bold text-gray-900 mb-2">560+</div>
               <div className="text-gray-600">Coffee taken</div>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>
@@ -601,9 +607,9 @@ const HomePage = () => {
       </section> */}
 
       {/* Expert Advisors */}
-      <section className="py-20 bg-white">
+      {/* <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      
+
           <div className="mb-12">
             <div className="flex items-center mb-2">
               <div className="w-8 h-0.5 bg-orange-500 mr-3"></div>
@@ -619,7 +625,7 @@ const HomePage = () => {
             </div>
           </div>
 
-       
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
             <div className="bg-white rounded-xl shadow-lg overflow-hidden">
               <div className="w-full h-48 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
@@ -637,7 +643,7 @@ const HomePage = () => {
             </div>
 
 
-            {/* Card 4 - RUBY WATSON */}
+ 
             <div className="bg-white rounded-xl shadow-lg overflow-hidden">
               <div className="w-full h-48 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
                 <div className="text-center">
@@ -654,13 +660,13 @@ const HomePage = () => {
             </div>
           </div>
 
-          {/* Pagination */}
+      
           <div className="flex justify-center space-x-2">
             <div className="w-8 h-2 bg-orange-500 rounded"></div>
             <div className="w-8 h-2 bg-orange-500 rounded"></div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Testimonials */}
       <section className="py-20 bg-gray-50 relative">
@@ -670,7 +676,7 @@ const HomePage = () => {
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
           }}></div>
         </div>
-        
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           {/* Header */}
           <div className="mb-12">
@@ -797,45 +803,13 @@ const HomePage = () => {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-center items-center space-x-12">
-            {/* audiojungle */}
+        
             <div className="flex items-center text-gray-600">
               <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center mr-2">
                 <span className="text-white text-sm font-bold">G</span>
               </div>
               <span className="font-medium">audiojungle</span>
-            </div>
-
-            {/* slack */}
-            <div className="flex items-center text-gray-600">
-              <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center mr-2">
-                <span className="text-white text-sm font-bold">#</span>
-              </div>
-              <span className="font-medium">slack</span>
-            </div>
-
-            {/* themeforest */}
-            <div className="flex items-center text-gray-600">
-              <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center mr-2">
-                <span className="text-white text-sm">🌳</span>
-              </div>
-              <span className="font-medium">themeforest</span>
-            </div>
-
-            {/* envato */}
-            <div className="flex items-center text-gray-600">
-              <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center mr-2">
-                <span className="text-white text-sm">🍃</span>
-              </div>
-              <span className="font-medium">envato</span>
-            </div>
-
-            {/* codecanyon */}
-            <div className="flex items-center text-gray-600">
-              <div className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center mr-2">
-                <span className="text-white text-sm font-bold">C</span>
-              </div>
-              <span className="font-medium">codecanyon</span>
-            </div>
+            </div>     
           </div>
         </div>
       </section>
@@ -852,7 +826,7 @@ const HomePage = () => {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-gray-800">Head office</h3>
-                  <p className="text-gray-600 text-sm">454 read, 36 Floor New York, USA</p>
+                  <p className="text-gray-600 text-sm">4 Mbaraka Mwinshee ,Mbezi Beach, DSM</p>
                 </div>
               </div>
             </div>
@@ -868,7 +842,7 @@ const HomePage = () => {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-gray-800">Call Us Direct</h3>
-                  <p className="text-gray-600 text-sm">+189-256567865, +99636523112</p>
+                  <p className="text-gray-600 text-sm">+255 757 798 155</p>
                 </div>
               </div>
             </div>
@@ -883,7 +857,7 @@ const HomePage = () => {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-gray-800">Mail Address</h3>
-                  <p className="text-gray-600 text-sm">+189-256567865, +99636523112</p>
+                  <p className="text-gray-600 text-sm">info@mamikim.africa</p>
                 </div>
               </div>
             </div>
@@ -893,10 +867,10 @@ const HomePage = () => {
 
 
 
-      
-      
-      </div>
-    );
+
+
+    </div>
+  );
 };
 
 export default HomePage;

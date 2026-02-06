@@ -30,7 +30,7 @@ export default function Footer() {
                             <Calendar className="h-5 w-5 mr-2" />
                             <span className="text-white">Opening Hours</span>
                         </div>
-                        <div className="text-orange-500 font-medium">9 am - 5pm</div>
+                        <div className="text-orange-500 font-medium">8 am - 7pm</div>
                     </div>
 
                     {/* Second Column - Categories */}
