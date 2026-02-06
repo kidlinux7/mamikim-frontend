@@ -1,6 +1,7 @@
 "use client";
 
 import { BookOpen, Users, Award, CheckCircle, ArrowRight, Star, Calendar } from "lucide-react";
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { FaMapMarker } from "react-icons/fa";
 import React, { useState, useEffect } from 'react';
@@ -191,58 +192,60 @@ const Aboutus = () => {
     <div className="min-h-screen bg-white">
 
       {/* Hero Section - About Us */}
-      <section className="relative bg-gradient-to-r from-orange-100 via-orange-50 to-orange-200 min-h-screen">
+      {/* Hero Section */}
+      <section className="relative bg-white min-h-[100vh]">
+        <div className="absolute inset-0">
+          <Image
+            src="/images/aboutus2.jpeg"
+            alt="Kitchen background"
+            width={1000}
+            height={700}
+            className="w-[100vw] h-[100vh] object-cover blur-sm "
+          />
+          <div className="absolute inset-0 bg-black/40"></div>
+        </div>
+
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[600px]">
-            {/* Left Side - Content */}
-            <div className="text-center lg:text-left">
-              <h1 className="text-5xl lg:text-6xl font-bold text-gray-800 leading-tight mb-4">
-                About Us
+            <div className="max-w-lg">
+              <div className="text-sm text-white/60 uppercase tracking-wider mb-4">LEARN FROM US</div>
+              <h1 className="text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
+                Global Expertise
+                <br />
+                Local Impact
               </h1>
-              <div className="text-sm text-gray-600 uppercase tracking-wider mb-8">
-                HOME / ABOUT US
-              </div>
-            </div>
+              <p className="text-lg text-white/80 leading-relaxed mb-8">
+                At Mamikim Academy, we bring world-class baking techniques to the Tanzanian kitchen. Our founder is a Chemical Engineer specialized  in Food Science, offering a unique scientific approach to the culinary arts.
+              </p>
 
-            {/* Right Side - Macaron Image */}
-            <div className="relative">
-              <div className="w-full h-96 bg-gradient-to-br from-orange-200 to-orange-300 rounded-2xl flex items-center justify-center relative overflow-hidden">
-                <div className="text-center">
-                  <div className="w-32 h-32 bg-orange-400 rounded-full flex items-center justify-center mb-4">
-                    <span className="text-orange-600 text-4xl">🍪</span>
-                  </div>
-                  <p className="text-orange-600 text-lg font-medium">Delicious Macaron</p>
-                </div>
+              <a href="/courses" target="_blank">
+                <button className="bg-orange-500 text-white px-8 py-4 rounded-lg hover:bg-orange-600 transition-colors font-semibold flex items-center">
+                  Enroll Course
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </button>
+              </a>
 
-                {/* Decorative orange circle with stripes */}
-                <div className="absolute top-8 right-8 w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center">
-                  <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-                    <div className="flex flex-col space-y-1">
-                      <div className="w-6 h-0.5 bg-orange-500"></div>
-                      <div className="w-6 h-0.5 bg-orange-500"></div>
-                      <div className="w-6 h-0.5 bg-orange-500"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+
+              {/* Decorative circle element */}
+              {/* <div className="absolute right-20 top-1/2 transform -translate-y-1/2 w-32 h-32 rounded-full border-4 border-orange-500 opacity-20 hidden lg:block"></div> */}
             </div>
           </div>
         </div>
       </section>
 
       {/* Call-to-Action Banner */}
-      <section className="py-8 bg-white">
+      {/* <section className="py-8 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-2xl shadow-lg p-8">
             <div className="flex flex-col lg:flex-row items-center justify-between">
-              {/* Left Side */}
+          
               <div className="flex items-center mb-6 lg:mb-0">
                 <div className="w-1 h-12 bg-orange-500 mr-6"></div>
                 <div className="relative">
                   <div className="w-6 h-6 border-2 border-orange-500 rounded-full flex items-center justify-center mb-2">
                     <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
                   </div>
-                  {/* Decorative dots and line */}
+               
                   <div className="absolute -top-2 -left-2 w-2 h-2 bg-green-400 rounded-full"></div>
                   <div className="absolute -top-1 right-4 w-2 h-2 bg-pink-400 rounded-full"></div>
                   <div className="absolute top-2 left-8 w-2 h-2 bg-gray-400 rounded-full"></div>
@@ -255,7 +258,7 @@ const Aboutus = () => {
                 </div>
               </div>
 
-              {/* Right Side - Button */}
+              
               <button className="bg-orange-500 text-white px-8 py-4 rounded-lg hover:bg-orange-600 transition-colors font-semibold flex items-center">
                 Enroll Course
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -263,7 +266,7 @@ const Aboutus = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Content Sections */}
       <section className="py-20 bg-white">
@@ -275,30 +278,159 @@ const Aboutus = () => {
                 Welcome to Mamikim academy
               </h2>
               <p className="text-gray-600 leading-relaxed">
-                Consequuntur atque bibendum sequi vivamus aliqua senectus hendrerit consectet tristique, consequatur laborum unde, aliquet laboris cillum sollicitudin pretium. Sociis aenean Quaerat nobis! Phasellus elit perferendis occaecato Blandit excepturi, fames diam molestias pellentesque sequi.
+                To ensure our students receive the highest standard of education, she has continuously expanded her expertise by training under international experts from Russia, Turkey, and Nigeria. This blend of global innovation and her lifelong experience in her family&apos;s bakery makes Mamikim Academy a leader in modern baking education.
+                Empowering a Generation of Entrepreneurs.
               </p>
             </div>
 
             {/* Right Section */}
             <div>
               <h2 className="text-3xl font-bold text-gray-800 mb-6">
-                We help you get better With that dough
+                Our Mission
               </h2>
-              <div className="w-6 h-6 border-2 border-orange-500 rounded-full flex items-center justify-center mb-4">
-                <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-              </div>
               <p className="text-gray-600 leading-relaxed">
-                Consequuntur atque bibendum sequi vivamus aliqua senectus hendrerit consectet tristique, consequatur laborum unde, aliquet laboris cillum sollicitudin pretium. Sociis aenean Quaerat nobis! Phasellus elit perferendis occaecato Blandit excepturi, fames diam molestias pellentesque sequi.
+                Our mission began with a simple observation during the COVID-19 lockdown: many women, especially those raising families or facing unemployment, were searching for a way to secure their financial future. Our founder transformed her passion into a platform for economic change, focusing on providing young women with marketable skills and a path to financial independence.
               </p>
             </div>
           </div>
         </div>
       </section>
 
+
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+            <div>
+              <div className="flex items-center mb-4">
+                <div className="w-8 h-0.5 bg-orange-500 mr-3"></div>
+                {/* <span className="text-sm text-gray-500 font-medium uppercase tracking-wider">Our Progress</span> */}
+              </div>
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-800 mb-6">
+                Our Journey
+              </h2>
+              <p className="text-gray-600 leading-relaxed mb-6">
+                To date, Mamikim Academy has successfully trained over 6,000 young women, the majority of whom have gone on to launch their own thriving businesses in the baking industry. By fostering self-reliance, we are helping women across the country reduce economic dependence and build sustainable careers.
+              </p>
+            </div>
+            <div className="relative">
+              <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
+                <Image
+                  src="/images/progress.jpeg"
+                  alt="Scientific Baking Process"
+                  width={800}
+                  height={600}
+                  className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              {/* Decorative elements */}
+              <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-orange-100 rounded-full -z-10 animate-pulse"></div>
+              <div className="absolute -top-6 -left-6 w-24 h-24 border-4 border-orange-500 opacity-20 rounded-2xl -z-10"></div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+
+
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+            <div className="relative">
+              <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
+                <Image
+                  src="/images/aboutus2.jpeg"
+                  alt="Scientific Baking Process"
+                  width={800}
+                  height={600}
+                  className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              {/* Decorative elements */}
+              <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-orange-100 rounded-full -z-10 animate-pulse"></div>
+              <div className="absolute -top-6 -left-6 w-24 h-24 border-4 border-orange-500 opacity-20 rounded-2xl -z-10"></div>
+            </div>
+            <div>
+              <div className="flex items-center mb-4">
+                <div className="w-8 h-0.5 bg-orange-500 mr-3"></div>
+                <span className="text-sm text-gray-500 font-medium uppercase tracking-wider">Our Integrated Baking Hub</span>
+              </div>
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-800 mb-6">
+                We support the success of our students and clients through three main pillars:
+              </h2>
+              <ul className="space-y-4">
+                {[
+                  {
+                    title: "Professional Training",
+                    desc: "Specialized online and physical programs in baking, advanced cake decoration, and commercial snack production."
+                  },
+                  {
+                    title: "Baking Supplies & Tools",
+                    desc: "We sell the same high-quality ingredients and professional tools used in our training, ensuring our students have access to the best resources to grow their businesses."
+                  },
+                  {
+                    title: "Exquisite Custom Cakes",
+                    desc: "Our bakery continues to provide custom-designed cakes for weddings, birthdays, and special events, crafted with scientific precision and artistic flair."
+                  }
+                ].map((pillar, i) => (
+                  <li key={i} className="flex items-start text-gray-700">
+                    <CheckCircle className="h-5 w-5 text-orange-500 mr-3 mt-1 flex-shrink-0" />
+                    <p className="text-gray-600 leading-relaxed">
+                      <strong className="text-gray-800">{pillar.title}:</strong> {pillar.desc}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+            <div>
+              <div className="flex items-center mb-4">
+                <div className="w-8 h-0.5 bg-orange-500 mr-3"></div>
+                {/* <span className="text-sm text-gray-500 font-medium uppercase tracking-wider">Our Progress</span> */}
+              </div>
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-800 mb-6">
+                Our Vision
+              </h2>
+              <p className="text-gray-600 leading-relaxed mb-6">
+                To empower women through world-class culinary training and entrepreneurship, proving that with the right skills and a global perspective, anyone can transform their passion into a powerful business.<br></br><br></br>
+                <b>Join the 6,000+ women who have changed their lives with us.</b><br></br>
+                Register for a Class | Shop Baking Tools | Order a Cake
+              </p>
+            </div>
+            <div className="relative">
+              <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
+                <Image
+                  src="/images/certificate.jpeg"
+                  alt="Scientific Baking Process"
+                  width={800}
+                  height={600}
+                  className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              {/* Decorative elements */}
+              <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-orange-100 rounded-full -z-10 animate-pulse"></div>
+              <div className="absolute -top-6 -left-6 w-24 h-24 border-4 border-orange-500 opacity-20 rounded-2xl -z-10"></div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+
+
+
       {/* Courses Section */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header Section */}
+
           <div className="mb-12">
             <div className="flex items-center mb-2">
               <div className="w-8 h-0.5 bg-orange-500 mr-3"></div>
@@ -308,7 +440,7 @@ const Aboutus = () => {
               Choose your perfect one and Enroll
             </h2>
 
-            {/* Category Navigation */}
+    
             <div className="flex space-x-8">
               <button className="text-orange-500 border-b-2 border-orange-500 pb-2 font-medium">Baking</button>
               <button className="text-gray-500 hover:text-orange-500 transition-colors">Business Management</button>
@@ -316,9 +448,10 @@ const Aboutus = () => {
             </div>
           </div>
 
-          {/* Course Cards */}
+
+       
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            {/* Course Card 1 */}
+       
             <div className="bg-white rounded-xl shadow-lg overflow-hidden">
               <div className="relative">
                 <div className="w-full h-48 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
@@ -330,7 +463,7 @@ const Aboutus = () => {
                   </div>
                 </div>
 
-                {/* Rating */}
+           
                 <div className="absolute top-4 right-4 flex items-center bg-white bg-opacity-90 rounded-full px-2 py-1">
                   <div className="flex text-orange-500">
                     {[...Array(5)].map((_, i) => (
@@ -340,13 +473,13 @@ const Aboutus = () => {
                   <span className="ml-1 text-xs text-gray-600">(12k)</span>
                 </div>
 
-                {/* Lesson Count */}
+              
                 <div className="absolute bottom-4 left-4 flex items-center bg-orange-500 bg-opacity-90 rounded-full px-2 py-1">
                   <BookOpen className="h-3 w-3 text-white" />
                   <span className="ml-1 text-xs text-white">6 Lessons</span>
                 </div>
 
-                {/* Duration */}
+              
                 <div className="absolute bottom-4 right-4 flex items-center bg-orange-500 bg-opacity-90 rounded-full px-2 py-1">
                   <Calendar className="h-3 w-3 text-white" />
                   <span className="ml-1 text-xs text-white">3:56:59</span>
@@ -354,7 +487,7 @@ const Aboutus = () => {
               </div>
 
               <div className="p-6">
-                {/* Instructor */}
+               
                 <div className="flex items-center mb-3">
                   <div className="w-6 h-6 bg-orange-200 rounded-full flex items-center justify-center mr-2">
                     <span className="text-orange-600 text-xs">👤</span>
@@ -362,15 +495,15 @@ const Aboutus = () => {
                   <span className="text-orange-500 text-sm">Course Instructor</span>
                 </div>
 
-                {/* Title */}
+             
                 <h3 className="text-lg font-bold text-gray-800 mb-3">Baking a simple cake</h3>
 
-                {/* Description */}
+             
                 <p className="text-gray-500 text-sm mb-4">
                   Conubia egestas eos laboris netus velit mi aliquid aute euismod, integer? Quo class taciti labore
                 </p>
 
-                {/* Action and Price */}
+               
                 <div className="flex items-center justify-between">
                   <button className="flex items-center text-gray-800 hover:text-orange-500 transition-colors">
                     <span className="text-sm font-medium">Enroll now</span>
@@ -381,131 +514,11 @@ const Aboutus = () => {
               </div>
             </div>
 
-            {/* Course Card 2 */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-              <div className="relative">
-                <div className="w-full h-48 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-orange-300 rounded-full flex items-center justify-center mb-2">
-                      <span className="text-orange-600 text-2xl">🥖</span>
-                    </div>
-                    <p className="text-orange-600 text-sm">Dough Making</p>
-                  </div>
-                </div>
-
-                {/* Rating */}
-                <div className="absolute top-4 right-4 flex items-center bg-white bg-opacity-90 rounded-full px-2 py-1">
-                  <div className="flex text-orange-500">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-3 w-3 fill-current" />
-                    ))}
-                  </div>
-                  <span className="ml-1 text-xs text-gray-600">(12k)</span>
-                </div>
-
-                {/* Lesson Count */}
-                <div className="absolute bottom-4 left-4 flex items-center bg-orange-500 bg-opacity-90 rounded-full px-2 py-1">
-                  <BookOpen className="h-3 w-3 text-white" />
-                  <span className="ml-1 text-xs text-white">6 Lessons</span>
-                </div>
-
-                {/* Duration */}
-                <div className="absolute bottom-4 right-4 flex items-center bg-orange-500 bg-opacity-90 rounded-full px-2 py-1">
-                  <Calendar className="h-3 w-3 text-white" />
-                  <span className="ml-1 text-xs text-white">3:56:59</span>
-                </div>
-              </div>
-
-              <div className="p-6">
-                {/* Instructor */}
-                <div className="flex items-center mb-3">
-                  <div className="w-6 h-6 bg-orange-200 rounded-full flex items-center justify-center mr-2">
-                    <span className="text-orange-600 text-xs">👤</span>
-                  </div>
-                  <span className="text-orange-500 text-sm">Course Instructor</span>
-                </div>
-
-                {/* Title */}
-                <h3 className="text-lg font-bold text-gray-800 mb-3">Baking a simple cake</h3>
-
-                {/* Description */}
-                <p className="text-gray-500 text-sm mb-4">
-                  Conubia egestas eos laboris netus velit mi aliquid aute euismod, integer? Quo class taciti labore
-                </p>
-
-                {/* Action and Price */}
-                <div className="flex items-center justify-between">
-                  <button className="flex items-center text-gray-800 hover:text-orange-500 transition-colors">
-                    <span className="text-sm font-medium">Enroll now</span>
-                    <ArrowRight className="ml-1 h-3 w-3" />
-                  </button>
-                  <span className="text-orange-500 font-semibold">Free</span>
-                </div>
-              </div>
-            </div>
+         
+            
 
             {/* Course Card 3 */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-              <div className="relative">
-                <div className="w-full h-48 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-orange-300 rounded-full flex items-center justify-center mb-2">
-                      <span className="text-orange-600 text-2xl">🍩</span>
-                    </div>
-                    <p className="text-orange-600 text-sm">Donut Making</p>
-                  </div>
-                </div>
-
-                {/* Rating */}
-                <div className="absolute top-4 right-4 flex items-center bg-white bg-opacity-90 rounded-full px-2 py-1">
-                  <div className="flex text-orange-500">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-3 w-3 fill-current" />
-                    ))}
-                  </div>
-                  <span className="ml-1 text-xs text-gray-600">(12k)</span>
-                </div>
-
-                {/* Lesson Count */}
-                <div className="absolute bottom-4 left-4 flex items-center bg-orange-500 bg-opacity-90 rounded-full px-2 py-1">
-                  <BookOpen className="h-3 w-3 text-white" />
-                  <span className="ml-1 text-xs text-white">6 Lessons</span>
-                </div>
-
-                {/* Duration */}
-                <div className="absolute bottom-4 right-4 flex items-center bg-orange-500 bg-opacity-90 rounded-full px-2 py-1">
-                  <Calendar className="h-3 w-3 text-white" />
-                  <span className="ml-1 text-xs text-white">3:56:59</span>
-                </div>
-              </div>
-
-              <div className="p-6">
-                {/* Instructor */}
-                <div className="flex items-center mb-3">
-                  <div className="w-6 h-6 bg-orange-200 rounded-full flex items-center justify-center mr-2">
-                    <span className="text-orange-600 text-xs">👤</span>
-                  </div>
-                  <span className="text-orange-500 text-sm">Course Instructor</span>
-                </div>
-
-                {/* Title */}
-                <h3 className="text-lg font-bold text-gray-800 mb-3">Baking a simple cake</h3>
-
-                {/* Description */}
-                <p className="text-gray-500 text-sm mb-4">
-                  Conubia egestas eos laboris netus velit mi aliquid aute euismod, integer? Quo class taciti labore
-                </p>
-
-                {/* Action and Price */}
-                <div className="flex items-center justify-between">
-                  <button className="flex items-center text-gray-800 hover:text-orange-500 transition-colors">
-                    <span className="text-sm font-medium">Enroll now</span>
-                    <ArrowRight className="ml-1 h-3 w-3" />
-                  </button>
-                  <span className="text-orange-500 font-semibold">Free</span>
-                </div>
-              </div>
-            </div>
+            
           </div>
 
           {/* Pagination */}
@@ -520,111 +533,7 @@ const Aboutus = () => {
         </div>
       </section>
 
-      {/* Expert Advisors */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
-          <div className="mb-12">
-            <div className="flex items-center mb-2">
-              <div className="w-8 h-0.5 bg-orange-500 mr-3"></div>
-              <span className="text-sm text-gray-500">Best teacher</span>
-            </div>
-            <div className="flex items-start justify-between">
-              <h2 className="text-4xl font-bold text-gray-800">
-                Our Expert Consult Advisor
-              </h2>
-              <p className="text-gray-600 max-w-md ml-8">
-                Consequatur mauris ipsa aliquam! Commodo purus corporis nostrud. Turpis dapibus magnam reprehenderit eget, excepturi, odit Fermentum?
-              </p>
-            </div>
-          </div>
-
-          {/* Teacher Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-            {/* Card 1 - CARDU MANYON */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-              <div className="w-full h-48 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
-                <div className="text-center">
-                  <div className="w-20 h-20 bg-orange-300 rounded-full flex items-center justify-center mb-2">
-                    <span className="text-orange-600 text-3xl">👩‍🏫</span>
-                  </div>
-                  <p className="text-orange-600 text-sm">Expert Teacher</p>
-                </div>
-              </div>
-              <div className="p-6 bg-white">
-                <h3 className="text-lg font-bold text-gray-800 mb-1">CARDU MANYON</h3>
-                <p className="text-gray-600 text-sm">Teacher of Mamikim Academy</p>
-              </div>
-            </div>
-
-            {/* Card 2 - ANAMIKA ISLAM */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-              <div className="w-full h-48 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
-                <div className="text-center">
-                  <div className="w-20 h-20 bg-orange-300 rounded-full flex items-center justify-center mb-2">
-                    <span className="text-orange-600 text-3xl">👩‍🏫</span>
-                  </div>
-                  <p className="text-orange-600 text-sm">Expert Teacher</p>
-                </div>
-              </div>
-              <div className="p-6 bg-white">
-                <h3 className="text-lg font-bold text-gray-800 mb-1">ANAMIKA ISLAM</h3>
-                <p className="text-gray-600 text-sm">Teacher of Mamikim Academy</p>
-              </div>
-            </div>
-
-            {/* Card 3 - KAZI JIHAD (Highlighted) */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-              <div className="w-full h-48 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center relative">
-                <div className="text-center">
-                  <div className="w-20 h-20 bg-orange-300 rounded-full flex items-center justify-center mb-2">
-                    <span className="text-orange-600 text-3xl">👩‍🏫</span>
-                  </div>
-                  <p className="text-orange-600 text-sm">Expert Teacher</p>
-                </div>
-                {/* Social Media Icons */}
-                <div className="absolute top-4 right-4 flex flex-col space-y-1">
-                  <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
-                    <span className="text-white text-xs">f</span>
-                  </div>
-                  <div className="w-6 h-6 bg-blue-400 rounded-full flex items-center justify-center">
-                    <span className="text-white text-xs">t</span>
-                  </div>
-                  <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
-                    <span className="text-white text-xs">⚙</span>
-                  </div>
-                </div>
-              </div>
-              <div className="p-6 bg-orange-500">
-                <h3 className="text-lg font-bold text-white mb-1">KAZI JIHAD</h3>
-                <p className="text-orange-100 text-sm">Teacher of Mamikim Academy</p>
-              </div>
-            </div>
-
-            {/* Card 4 - RUBY WATSON */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-              <div className="w-full h-48 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
-                <div className="text-center">
-                  <div className="w-20 h-20 bg-orange-300 rounded-full flex items-center justify-center mb-2">
-                    <span className="text-orange-600 text-3xl">👨‍🍳</span>
-                  </div>
-                  <p className="text-orange-600 text-sm">Young Chef</p>
-                </div>
-              </div>
-              <div className="p-6 bg-white">
-                <h3 className="text-lg font-bold text-gray-800 mb-1">RUBY WATSON</h3>
-                <p className="text-gray-600 text-sm">Teacher of Mamikim Academy</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Pagination */}
-          <div className="flex justify-center space-x-2">
-            <div className="w-8 h-2 bg-orange-500 rounded"></div>
-            <div className="w-8 h-2 bg-orange-500 rounded"></div>
-          </div>
-        </div>
-      </section>
+      
 
 
       {/* Statistics Section */}
@@ -637,13 +546,13 @@ const Aboutus = () => {
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
             {/* Card 1 - All Students */}
             <div className="bg-white rounded-full  p-8 text-center">
               <div className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-white text-2xl">📚</span>
               </div>
-              <div className="text-3xl font-bold text-gray-800 mb-2">37895+</div>
+              <div className="text-3xl font-bold text-gray-800 mb-2">6000+</div>
               <div className="text-gray-600">All Students</div>
             </div>
 
@@ -652,25 +561,17 @@ const Aboutus = () => {
               <div className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-white text-2xl">🏢</span>
               </div>
-              <div className="text-3xl font-bold text-gray-800 mb-2">560+</div>
+              <div className="text-3xl font-bold text-gray-800 mb-2">300+</div>
               <div className="text-gray-600">Courses Available</div>
             </div>
 
-            {/* Card 3 - Awards Wins */}
-            <div className="bg-white rounded-full p-8 text-center">
-              <div className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-white text-2xl">🏆</span>
-              </div>
-              <div className="text-3xl font-bold text-gray-800 mb-2">560+</div>
-              <div className="text-gray-600">Awards Wins</div>
-            </div>
 
             {/* Card 4 - Happy Clients */}
             <div className="bg-white rounded-full p-8 text-center">
               <div className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-white text-2xl">☕</span>
               </div>
-              <div className="text-3xl font-bold text-gray-800 mb-2">560+</div>
+              <div className="text-3xl font-bold text-gray-800 mb-2">6000+</div>
               <div className="text-gray-600">Happy Clients</div>
             </div>
           </div>
@@ -678,10 +579,10 @@ const Aboutus = () => {
       </section>
 
       {/* Company Logos Section */}
-      <section className="py-16 bg-white">
+      {/* <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-center items-center space-x-12">
-            {/* audiojungle */}
+       
             <div className="flex items-center text-black">
               <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-2">
                 <span className="text-white text-sm font-bold">G</span>
@@ -689,40 +590,10 @@ const Aboutus = () => {
               <span className="font-medium">audiojungle</span>
             </div>
 
-            {/* slack */}
-            <div className="flex items-center text-black">
-              <div className="w-8 h-8 bg-teal-500 rounded-full flex items-center justify-center mr-2">
-                <span className="text-white text-sm font-bold">#</span>
-              </div>
-              <span className="font-medium">slack</span>
-            </div>
-
-            {/* themeforest */}
-            <div className="flex items-center text-black">
-              <div className="w-8 h-8 bg-brown-500 rounded-full flex items-center justify-center mr-2">
-                <span className="text-white text-sm">🌳</span>
-              </div>
-              <span className="font-medium">themeforest</span>
-            </div>
-
-            {/* envato */}
-            <div className="flex items-center text-black">
-              <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-2">
-                <span className="text-white text-sm">●</span>
-              </div>
-              <span className="font-medium">envato</span>
-            </div>
-
-            {/* codecanyon */}
-            <div className="flex items-center text-black">
-              <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center mr-2">
-                <span className="text-white text-sm">🐔</span>
-              </div>
-              <span className="font-medium">codecanyon</span>
-            </div>
+      
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Call-to-Action Section */}
       <section className="py-20 bg-gradient-to-r from-orange-100 to-orange-200 relative">
@@ -751,23 +622,6 @@ const Aboutus = () => {
               </div>
             </div>
 
-            {/* Right Card - Become a teacher */}
-            <div className="bg-orange-500 rounded-xl shadow-lg p-8">
-              <h3 className="text-2xl font-bold text-white mb-4">Become a teacher</h3>
-              <p className="text-orange-100 mb-6">
-                Are you knowledge base tell just some words we will came back within 5 minutes
-              </p>
-              <div className="flex">
-                <input
-                  type="email"
-                  placeholder="Email address"
-                  className="flex-1 px-4 py-3 rounded-l-lg border-0 bg-orange-600 text-white placeholder-orange-200 focus:ring-2 focus:ring-white focus:outline-none"
-                />
-                <button className="bg-white text-orange-500 px-6 py-3 rounded-r-lg hover:bg-gray-100 transition-colors font-medium">
-                  JOIN US
-                </button>
-              </div>
-            </div>
           </div>
         </div>
       </section>

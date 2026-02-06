@@ -191,40 +191,39 @@ const Contactus = () => {
     return (
         <div className="min-h-screen bg-white">
 
-            {/* Hero Section - Contact Us */}
-            <section className="relative bg-gradient-to-r from-orange-100 via-orange-50 to-orange-200 min-h-screen">
-                {/* Background Image */}
-                <div className="absolute inset-0 bg-cover bg-center opacity-30" style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg width='1200' height='600' viewBox='0 0 1200 600' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='1200' height='600' fill='%23f97316'/%3E%3Ccircle cx='800' cy='300' r='80' fill='%23fbbf24'/%3E%3Ccircle cx='400' cy='200' r='60' fill='%23f59e0b'/%3E%3C/svg%3E")`
-                }}></div>
+       <section className="relative bg-white min-h-[100vh]">
+               <div className="absolute inset-0">
+                 <Image
+                   src="/images/contactus.jpeg"
+                   alt="Kitchen background"
+                   width={1000}
+                   height={700}
+                   className="w-[100vw] h-[100vh] object-cover blur-sm "
+                 />
+                 <div className="absolute inset-0 bg-black/40"></div>
+               </div>
+       
+               <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[600px]">
+                   <div className="max-w-lg">
+                     <div className="text-sm text-white/60 uppercase tracking-wider mb-4">REACH OUT TO US</div>
+                     <h1 className="text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
+                       Contact Us
+                       <br />
+                     
+                     </h1>
+                     <p className="text-lg text-white/80 leading-relaxed mb-8">
+                       At Mamikim Academy, we bring world-class baking techniques to the Tanzanian kitchen. Our founder is a Chemical Engineer specialized  in Food Science, offering a unique scientific approach to the culinary arts.
+                     </p>
 
-                <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[600px]">
-                        {/* Left Side - Content */}
-                        <div className="text-center lg:text-left">
-                            <h1 className="text-5xl lg:text-6xl font-bold text-white leading-tight mb-4">
-                                Contact Us
-                            </h1>
-                            <div className="text-sm text-white uppercase tracking-wider mb-8">
-                                HOME / CONTACT
-                            </div>
-                        </div>
-
-                        {/* Right Side - Decorative Circle */}
-                        <div className="relative">
-                            <div className="w-32 h-32 bg-orange-500 rounded-full flex items-center justify-center absolute top-8 right-8">
-                                <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center">
-                                    <div className="flex flex-col space-y-1">
-                                        <div className="w-8 h-0.5 bg-orange-500"></div>
-                                        <div className="w-8 h-0.5 bg-orange-500"></div>
-                                        <div className="w-8 h-0.5 bg-orange-500"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+       
+       
+                     {/* Decorative circle element */}
+                     {/* <div className="absolute right-20 top-1/2 transform -translate-y-1/2 w-32 h-32 rounded-full border-4 border-orange-500 opacity-20 hidden lg:block"></div> */}
+                   </div>
+                 </div>
+               </div>
+             </section>
 
             {/* Main Content Section */}
             <section className="py-20 bg-white">
@@ -241,12 +240,6 @@ const Contactus = () => {
                                     <span className="text-orange-500 mr-3 mt-1">•</span>
                                     <a href="#" className="text-gray-600 hover:text-orange-500 transition-colors">
                                         Check out our <span className="text-orange-500 font-medium">FAQ</span>
-                                    </a>
-                                </div>
-                                <div className="flex items-start">
-                                    <span className="text-orange-500 mr-3 mt-1">•</span>
-                                    <a href="#" className="text-gray-600 hover:text-orange-500 transition-colors">
-                                        Read our <span className="text-orange-500 font-medium">Shipping & Returns policy</span>
                                     </a>
                                 </div>
                             </div>
