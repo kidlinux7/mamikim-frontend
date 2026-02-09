@@ -11,6 +11,8 @@ import { useRouter, usePathname } from "next/navigation";
 import { supabase } from '@/lib/supabase/client';
 import { ModeToggle } from '../theme-toggle';
 import { UserNav } from '../user-nav';
+import logo from '@/public/logo.png';
+import Image from 'next/image';
 
 
 const Navbar = () => {
@@ -133,7 +135,16 @@ const Navbar = () => {
       <nav className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
+
             <div className="flex items-center">
+              <Image src={logo} alt="Logo" width={50} height={50} />
+              <div className="ml-3">
+                <span className="text-2xl font-bold text-gray-900">Mamikim</span>
+                <div className="text-xs text-gray-500 uppercase tracking-wider">ACADEMY</div>
+              </div>
+            </div>
+
+            {/* <div className="flex items-center">
               <div className="bg-orange-500 w-12 h-12 rounded-full flex items-center justify-center">
                 <span className="text-white font-bold text-xl">M</span>
               </div>
@@ -141,7 +152,7 @@ const Navbar = () => {
                 <span className="text-2xl font-bold text-gray-900">Mamikim</span>
                 <div className="text-xs text-gray-500 uppercase tracking-wider">ACADEMY</div>
               </div>
-            </div>
+            </div> */}
 
             <div className="hidden lg:block">
               <div className="flex items-center space-x-8">

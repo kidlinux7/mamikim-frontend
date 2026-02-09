@@ -800,7 +800,7 @@ const HomePage = () => {
       </section> */}
 
       {/* Company Logos Section */}
-      <section className="py-16 bg-white">
+      {/* <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-center items-center space-x-12">
 
@@ -812,7 +812,7 @@ const HomePage = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Contact Information Section */}
       <section className="py-16 bg-gray-50">
