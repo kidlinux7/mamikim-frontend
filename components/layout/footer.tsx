@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Image from 'next/image'
 import { Calendar, Mail, MapPin, Phone } from "lucide-react";
+import footerlogo from '@/public/footer.png';
+
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -14,15 +16,13 @@ export default function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {/* Left Column - Mamikim Academy */}
                     <div className="md:col-span-1">
-                        <div className="flex items-center mb-4">
-                            <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mr-3">
-                                <span className="text-white text-2xl">🥄</span>
-                            </div>
-                            <div>
-                                <span className="text-2xl font-bold text-white">Mamikim</span>
-                                <div className="text-xs text-gray-400 uppercase tracking-wider">ACADEMY</div>
-                            </div>
-                        </div>
+            <div className="flex items-center">
+              <Image src={footerlogo} alt="Logo" width={50} height={50} />
+              <div className="ml-3">
+                <span className="text-2xl font-bold text-gray-900">Mamikim</span>
+                <div className="text-xs text-gray-500 uppercase tracking-wider">ACADEMY</div>
+              </div>
+            </div>
                         <p className="text-gray-400 mb-6 leading-relaxed">
                             Empowering learners worldwide with expert-led courses and practical skills in baking and culinary arts.
                         </p>
