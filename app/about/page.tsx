@@ -1,12 +1,31 @@
 "use client";
 
-import { BookOpen, Users, Award, CheckCircle, ArrowRight, Star, Calendar } from "lucide-react";
+import { BookOpen, Users, Award, CheckCircle, ArrowRight, Star, Calendar, Search, Globe, X } from "lucide-react";
 import Image from "next/image";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { FaMapMarker } from "react-icons/fa";
 import React, { useState, useEffect } from 'react';
 import Navbar from "@/components/layout/navbar";
 import Footer from "@/components/layout/footer";
+import { supabase } from "@/lib/supabase/client";
+import { CourseFilters } from "@/components/CourseFilters";
+
+interface Course {
+  id: string;
+  title: string;
+  category: string;
+  description: string;
+  image_url: string;
+  instructor_id: string;
+  price: number;
+  hours: number;
+  level: string;
+  rating: number;
+  students_count: number;
+  created_at: string;
+}
+
 
 
 const Aboutus = () => {
@@ -44,32 +63,7 @@ const Aboutus = () => {
     },
   ];
 
-  const courses = [
-    {
-      image: "/api/placeholder/300/200",
-      title: "Baking a simple cake",
-      instructor: "Jennifer Wilson",
-      rating: 4.8,
-      students: 2341,
-      price: "$29.00"
-    },
-    {
-      image: "/api/placeholder/300/200",
-      title: "Making a simple cake",
-      instructor: "David Miller",
-      rating: 4.9,
-      students: 1892,
-      price: "$34.00"
-    },
-    {
-      image: "/api/placeholder/300/200",
-      title: "Baking a simple cake",
-      instructor: "Sarah Johnson",
-      rating: 4.7,
-      students: 3156,
-      price: "$39.00"
-    }
-  ];
+
 
   const stats = [
     { number: "560+", label: "Expert Tutors" },
@@ -181,12 +175,97 @@ const Aboutus = () => {
     }
   ];
 
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Filter states
+  const [searchQuery, setSearchQuery] = useState("");
+  const [levelFilter, setLevelFilter] = useState<string>("Latest");
+  const [durationFilter, setDurationFilter] = useState<string>("All");
+  const [categoryFilter, setCategoryFilter] = useState<string>("All");
+
+  // Enrollment counts: { [course_id]: count }
+  const [enrollmentCounts, setEnrollmentCounts] = useState<{ [key: string]: number }>({});
+
+  useEffect(() => {
+    async function fetchCoursesAndEnrollments() {
+      try {
+        const { data: coursesData, error: supabaseError } = await supabase
+          .from("courses")
+          .select(`
+            *,
+            profiles:instructor_id (
+              full_name
+            )
+          `)
+          .order("created_at", { ascending: false });
+
+        if (supabaseError) throw supabaseError;
+        setCourses(coursesData || []);
+        setError(null);
+
+        const { data: enrollRows, error: enrollError } = await supabase
+          .from("enrollment")
+          .select("course_id");
+        if (enrollError) throw enrollError;
+        const counts: { [key: string]: number } = {};
+        (enrollRows || []).forEach((row: any) => {
+          counts[row.course_id] = (counts[row.course_id] || 0) + 1;
+        });
+        setEnrollmentCounts(counts);
+      } catch (err) {
+        console.error("Error fetching courses:", err);
+        setError(err instanceof Error ? err.message : "Failed to fetch courses");
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchCoursesAndEnrollments();
+  }, []);
+
+  const clearFilters = () => {
+    setSearchQuery("");
+    setLevelFilter("Latest");
+    setDurationFilter("All");
+    setCategoryFilter("All");
+  };
+
+  const filteredCourses = courses
+    .filter((course) => {
+      if (searchQuery.trim() !== "") {
+        const q = searchQuery.toLowerCase();
+        if (!course.title.toLowerCase().includes(q) && !course.description.toLowerCase().includes(q)) {
+          return false;
+        }
+      }
+      if (levelFilter !== "Latest" && levelFilter !== "All") {
+        if (course.level.toLowerCase() !== levelFilter.toLowerCase()) return false;
+      }
+      if (categoryFilter !== "All") {
+        if (course.category.toLowerCase() !== categoryFilter.toLowerCase()) return false;
+      }
+      if (durationFilter !== "All") {
+        if (durationFilter === "Short" && course.hours >= 5) return false;
+        if (durationFilter === "Medium" && (course.hours < 5 || course.hours > 10)) return false;
+        if (durationFilter === "Long" && course.hours <= 10) return false;
+      }
+      return true;
+    })
+    .sort((a, b) => {
+      if (levelFilter === "Latest") {
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      }
+      return 0;
+    });
+
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % testimonials.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [testimonials.length]);
+
 
   return (
     <div className="min-h-screen bg-white">
@@ -427,10 +506,8 @@ const Aboutus = () => {
 
 
 
-      {/* Courses Section */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
           <div className="mb-12">
             <div className="flex items-center mb-2">
               <div className="w-8 h-0.5 bg-orange-500 mr-3"></div>
@@ -440,100 +517,133 @@ const Aboutus = () => {
               Choose your perfect one and Enroll
             </h2>
 
-    
-            <div className="flex space-x-8">
-              <button className="text-orange-500 border-b-2 border-orange-500 pb-2 font-medium">Baking</button>
-              <button className="text-gray-500 hover:text-orange-500 transition-colors">Business Management</button>
-              <button className="text-gray-500 hover:text-orange-500 transition-colors">Digital Marketing</button>
-            </div>
+            <CourseFilters
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              levelFilter={levelFilter}
+              setLevelFilter={setLevelFilter}
+              durationFilter={durationFilter}
+              setDurationFilter={setDurationFilter}
+              categoryFilter={categoryFilter}
+              setCategoryFilter={setCategoryFilter}
+              onClear={clearFilters}
+            />
           </div>
 
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+              {[...Array(3)].map((_, i) => (
+                <Card key={i} className="animate-pulse">
+                  <div className="aspect-video bg-muted"></div>
+                  <CardHeader>
+                    <div className="h-6 bg-muted rounded w-3/4"></div>
+                    <div className="h-4 bg-muted rounded w-1/2 mt-2"></div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-24 bg-muted rounded"></div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : error ? (
+            <div className="text-center py-12">
+              <h3 className="text-xl font-semibold text-red-600 mb-2">Error Loading Courses</h3>
+              <p className="text-gray-500 mb-4">{error}</p>
+              <Button onClick={() => window.location.reload()}>Try Again</Button>
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                {filteredCourses.length === 0 ? (
+                  <div className="col-span-full text-center py-12">
+                    <h3 className="text-xl font-semibold text-gray-600 mb-2">No courses found</h3>
+                    <p className="text-gray-500">Try adjusting your search or filters</p>
+                  </div>
+                ) : (
+                  filteredCourses.map((course) => (
+                    <div key={course.id} className="bg-white rounded-xl shadow-lg overflow-hidden">
+                      <div className="relative">
+                        <div className="w-full h-48 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
+                          {course.image_url ? (
+                            <Image
+                              src={course.image_url}
+                              alt={course.title}
+                              width={400}
+                              height={300}
+                              className="object-cover w-full h-full"
+                            />
+                          ) : (
+                            <div className="text-center">
+                              <div className="w-16 h-16 bg-orange-300 rounded-full flex items-center justify-center mb-2">
+                                <span className="text-orange-600 text-2xl">🍰</span>
+                              </div>
+                              <p className="text-orange-600 text-sm">{course.category || "Baking Course"}</p>
+                            </div>
+                          )}
+                        </div>
 
-       
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-       
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-              <div className="relative">
-                <div className="w-full h-48 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="w-16 h-16 bg-orange-300 rounded-full flex items-center justify-center mb-2">
-                      <span className="text-orange-600 text-2xl">🍰</span>
+                        <div className="absolute top-4 right-4 flex items-center bg-white bg-opacity-90 rounded-full px-2 py-1">
+                          <div className="flex text-orange-500">
+                            {[...Array(5)].map((_, i) => (
+                              <Star key={i} className="h-3 w-3 fill-current" />
+                            ))}
+                          </div>
+                          <span className="ml-1 text-xs text-gray-600">
+                            ({enrollmentCounts[course.id] || 0})
+                          </span>
+                        </div>
+
+                        <div className="absolute bottom-4 left-4 flex items-center bg-orange-500 bg-opacity-90 rounded-full px-2 py-1">
+                          <BookOpen className="h-3 w-3 text-white" />
+                          <span className="ml-1 text-xs text-white">{Math.ceil(course.hours / 2)} Lessons</span>
+                        </div>
+
+                        <div className="absolute bottom-4 right-4 flex items-center bg-orange-500 bg-opacity-90 rounded-full px-2 py-1">
+                          <Calendar className="h-3 w-3 text-white" />
+                          <span className="ml-1 text-xs text-white">{course.hours}h</span>
+                        </div>
+                      </div>
+
+                      <div className="p-6">
+                        <div className="flex items-center mb-3">
+                          <div className="w-6 h-6 bg-orange-200 rounded-full flex items-center justify-center mr-2">
+                            <span className="text-orange-600 text-xs">👤</span>
+                          </div>
+                          <span className="text-orange-500 text-sm">Course Instructor</span>
+                        </div>
+
+                        <h3 className="text-lg font-bold text-gray-800 mb-3">{course.title}</h3>
+
+                        <p className="text-gray-500 text-sm mb-4">
+                          {course.description.length > 100
+                            ? `${course.description.substring(0, 100)}...`
+                            : course.description}
+                        </p>
+
+                        <div className="flex items-center justify-between">
+                          <button
+                            onClick={() => window.location.href = `/courses/${course.id}`}
+                            className="flex items-center text-gray-800 hover:text-orange-500 transition-colors"
+                          >
+                            <span className="text-sm font-medium">Enroll now</span>
+                            <ArrowRight className="ml-1 h-3 w-3" />
+                          </button>
+                          <span className="text-orange-500 font-semibold">
+                            {course.price === 0 ? "Free" : `TZS ${course.price.toLocaleString()}`}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <p className="text-orange-600 text-sm">Baking Course</p>
-                  </div>
-                </div>
-
-           
-                <div className="absolute top-4 right-4 flex items-center bg-white bg-opacity-90 rounded-full px-2 py-1">
-                  <div className="flex text-orange-500">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-3 w-3 fill-current" />
-                    ))}
-                  </div>
-                  <span className="ml-1 text-xs text-gray-600">(12k)</span>
-                </div>
-
-              
-                <div className="absolute bottom-4 left-4 flex items-center bg-orange-500 bg-opacity-90 rounded-full px-2 py-1">
-                  <BookOpen className="h-3 w-3 text-white" />
-                  <span className="ml-1 text-xs text-white">6 Lessons</span>
-                </div>
-
-              
-                <div className="absolute bottom-4 right-4 flex items-center bg-orange-500 bg-opacity-90 rounded-full px-2 py-1">
-                  <Calendar className="h-3 w-3 text-white" />
-                  <span className="ml-1 text-xs text-white">3:56:59</span>
-                </div>
+                  ))
+                )}
               </div>
-
-              <div className="p-6">
-               
-                <div className="flex items-center mb-3">
-                  <div className="w-6 h-6 bg-orange-200 rounded-full flex items-center justify-center mr-2">
-                    <span className="text-orange-600 text-xs">👤</span>
-                  </div>
-                  <span className="text-orange-500 text-sm">Course Instructor</span>
-                </div>
-
-             
-                <h3 className="text-lg font-bold text-gray-800 mb-3">Baking a simple cake</h3>
-
-             
-                <p className="text-gray-500 text-sm mb-4">
-                  Conubia egestas eos laboris netus velit mi aliquid aute euismod, integer? Quo class taciti labore
-                </p>
-
-               
-                <div className="flex items-center justify-between">
-                  <button className="flex items-center text-gray-800 hover:text-orange-500 transition-colors">
-                    <span className="text-sm font-medium">Enroll now</span>
-                    <ArrowRight className="ml-1 h-3 w-3" />
-                  </button>
-                  <span className="text-orange-500 font-semibold">Free</span>
-                </div>
-              </div>
-            </div>
-
-         
-            
-
-            {/* Course Card 3 */}
-            
-          </div>
-
-          {/* Pagination */}
-          <div className="flex justify-center space-x-2">
-            <button className="w-10 h-10 border-2 border-gray-300 rounded-full flex items-center justify-center hover:border-orange-500 transition-colors">
-              <ArrowRight className="h-4 w-4 text-gray-400 rotate-180" />
-            </button>
-            <button className="w-10 h-10 bg-orange-500 border-2 border-orange-500 rounded-full flex items-center justify-center">
-              <ArrowRight className="h-4 w-4 text-white" />
-            </button>
-          </div>
+            </>
+          )}
         </div>
       </section>
 
-      
+
+
 
 
       {/* Statistics Section */}

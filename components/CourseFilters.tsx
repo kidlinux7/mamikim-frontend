@@ -18,6 +18,8 @@ interface CourseFiltersProps {
     setLevelFilter: (level: string) => void;
     durationFilter: string;
     setDurationFilter: (duration: string) => void;
+    categoryFilter: string;
+    setCategoryFilter: (category: string) => void;
     onClear: () => void;
 }
 
@@ -28,17 +30,19 @@ export function CourseFilters({
     setLevelFilter,
     durationFilter,
     setDurationFilter,
+    categoryFilter,
+    setCategoryFilter,
     onClear,
 }: CourseFiltersProps) {
     return (
-        <div className="flex flex-col md:flex-row gap-6 mb-12 items-center justify-between bg-white/80 backdrop-blur-md p-6 rounded-2xl border border-gray-100 shadow-xl shadow-gray-200/50">
-            <div className="relative w-full md:w-2/5">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+        <div className="flex flex-col md:flex-row gap-3 mb-12 items-center justify-between bg-white/80 backdrop-blur-md p-3 rounded-2xl border border-gray-100 shadow-xl shadow-gray-200/50">
+            <div className="relative w-full md:w-1/5">
+                <Search className="absolute left-1 top-1/2 -translate-y-1/2 h-5 w-8  text-gray-400" />
                 <Input
-                    placeholder="Search for courses, topics, or instructors..."
+                    placeholder="Search for courses or topics"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-12 py-6 bg-white border-gray-200 focus:border-orange-500 focus:ring-orange-500/20 transition-all rounded-xl text-lg shadow-sm"
+                    className="pl-9 py-6 bg-white border-gray-200 focus:border-orange-500 focus:ring-orange-500/20 transition-all rounded-xl text-sm shadow-sm"
                 />
             </div>
 
@@ -60,6 +64,22 @@ export function CourseFilters({
                 </div>
 
                 <div className="flex items-center gap-3">
+                    <span className="text-sm font-semibold text-gray-600 uppercase tracking-wider">Category</span>
+                    <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                        <SelectTrigger className="w-[160px] h-12 bg-white border-gray-200 rounded-xl focus:ring-orange-500/20">
+                            <SelectValue placeholder="All Categories" />
+                        </SelectTrigger>
+                        <SelectContent className="rounded-xl border-gray-100 shadow-xl">
+                            <SelectItem value="All">All Categories</SelectItem>
+                            <SelectItem value="Baking">Baking</SelectItem>
+                            <SelectItem value="Business Management">Business Management</SelectItem>
+                            <SelectItem value="Digital Marketing">Digital Marketing</SelectItem>
+                            <SelectItem value="Content Creation">Content Creation</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+
+                <div className="flex items-center gap-3">
                     <span className="text-sm font-semibold text-gray-600 uppercase tracking-wider">Duration</span>
                     <Select value={durationFilter} onValueChange={setDurationFilter}>
                         <SelectTrigger className="w-[160px] h-12 bg-white border-gray-200 rounded-xl focus:ring-orange-500/20">
@@ -74,7 +94,7 @@ export function CourseFilters({
                     </Select>
                 </div>
 
-                {(searchQuery || levelFilter !== "Latest" || durationFilter !== "All") && (
+                {(searchQuery || levelFilter !== "Latest" || durationFilter !== "All" || categoryFilter !== "All") && (
                     <Button
                         variant="ghost"
                         onClick={onClear}

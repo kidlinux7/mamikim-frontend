@@ -10,6 +10,7 @@ import { Star, Clock, Globe, X, Search, ArrowRight, Calendar, BookOpen } from "l
 interface Course {
   id: string;
   title: string;
+  category: string;
   description: string;
   image_url: string;
   instructor_id: string;
@@ -33,6 +34,8 @@ export default function CoursesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [levelFilter, setLevelFilter] = useState<string>("Latest");
   const [durationFilter, setDurationFilter] = useState<string>("All");
+  const [categoryFilter, setCategoryFilter] = useState<string>("All");
+  
 
   // Enrollment counts: { [course_id]: count }
   const [enrollmentCounts, setEnrollmentCounts] = useState<{ [key: string]: number }>({});
@@ -104,6 +107,16 @@ export default function CoursesPage() {
       // Level filter
       if (levelFilter !== "Latest" && levelFilter !== "All") {
         if (course.level.toLowerCase() !== levelFilter.toLowerCase()) {
+          return false;
+        }
+      }
+      // Category filter
+      if (categoryFilter !== "All") {
+        if (course.category.toLowerCase() !== categoryFilter.toLowerCase()) {
+          if (categoryFilter === "Baking" && course.category === "Baking") return false;
+          if (categoryFilter === "Business Management" && course.category === "Business Management") return false;
+          if (categoryFilter === "Digital Marketing" && course.category === "Digital Marketing") return false;
+          if (categoryFilter === "Content Creation" && course.category === "Content Creation") return false;
           return false;
         }
       }
@@ -182,6 +195,8 @@ export default function CoursesPage() {
             setLevelFilter={setLevelFilter}
             durationFilter={durationFilter}
             setDurationFilter={setDurationFilter}
+            categoryFilter={categoryFilter}
+            setCategoryFilter={setCategoryFilter}
             onClear={clearFilters}
           />
 

@@ -27,6 +27,7 @@ interface Course {
   introduction_video: string;
   description: string;
   price: number;
+  category: string;
   level: string;
   hours: number;
   image_url: string;
@@ -55,6 +56,7 @@ const courseFormSchema = z.object({
   introduction_video: z.string().min(1, "Introduction video link is required").max(200, "Introduction video link must be less than 200 characters"),
   description: z.string().min(50, "Description must be at least 50 characters").max(1000, "Description must be less than 1000 characters"),
   price: z.number().min(0, "Price must be positive"),
+  category: z.string().min(1, "Category is required"),
   level: z.string().min(1, "Level is required"),
   hours: z.number().min(1, "Hours must be at least 1"),
   what_you_will_learn: z.array(z.string()).min(1, "Add at least one learning outcome"),
@@ -170,6 +172,7 @@ export default function LecturerDashboard() {
       introduction_video: "",
       description: "",
       price: 10000,
+      category: "",
       level: "",
       hours: 1,
       what_you_will_learn: [""],
@@ -188,6 +191,7 @@ export default function LecturerDashboard() {
       introduction_video: "",
       description: "",
       price: 10000,
+      category: "",
       level: "",
       hours: 1,
       what_you_will_learn: [""],
@@ -377,6 +381,7 @@ export default function LecturerDashboard() {
           introduction_video: data.introduction_video,
           description: data.description,
           price: data.price,
+          category: data.category,
           level: data.level,
           hours: data.hours,
           image_url: imageUrl,
@@ -436,6 +441,7 @@ export default function LecturerDashboard() {
           introduction_video: data.introduction_video,
           description: data.description,
           price: data.price,
+          category: data.category,
           level: data.level,
           hours: data.hours,
           image_url: imageUrl,
@@ -697,6 +703,33 @@ export default function LecturerDashboard() {
                         </div>
                       )}
                     </div>
+
+                   {/* Category */}
+                    <FormField
+                      control={form.control}
+                      name="category"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Level</FormLabel>
+                          <FormControl>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select a Category" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectGroup>
+                                  <SelectItem value="Baking">Baking</SelectItem>
+                                  <SelectItem value="Business Management">Business Management</SelectItem>
+                                  <SelectItem value="Digital Marketing">Digital Marketing</SelectItem>
+                                  <SelectItem value="Content Creation">Content Creation</SelectItem>
+                                </SelectGroup>
+                              </SelectContent>
+                            </Select>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
                     {/* Price and Hours */}
                     <div className="grid grid-cols-2 gap-4">

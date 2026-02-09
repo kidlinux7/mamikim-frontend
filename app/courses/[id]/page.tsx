@@ -49,6 +49,7 @@ interface CourseSummary {
 interface Course {
   id: string;
   title: string;
+  category: string;
   subtitle: string | null;
   description: string | null;
   image_url: string | null;
@@ -118,6 +119,7 @@ function CoursePage({ params }: { params: { id: string } }) {
           .select(`
             id,
             title,
+            category,
             subtitle,
             description,
             image_url,
@@ -207,7 +209,8 @@ function CoursePage({ params }: { params: { id: string } }) {
           who_is_this_course_for: courseData.who_is_this_course_for || [],
           subtitle: courseData.subtitle || "",
           description: courseData.description || "",
-          level: courseData.level || "Beginner"
+          level: courseData.level || "Beginner",
+          category: courseData.category || ""
         };
 
         setCourse(fullCourse);
@@ -546,8 +549,8 @@ function CoursePage({ params }: { params: { id: string } }) {
         <div className="mb-6 flex items-start justify-between gap-4">
           <div>
             <h1 className="text-2xl md:text-3xl font-bold mb-1">{course_data.title}</h1>
-            {course_data.subtitle && (
-              <p className="text-sm text-muted-foreground">{course_data.subtitle}</p>
+            {course_data.category && (
+              <p className="text-sm text-muted-foreground">{course_data.category}</p>
             )}
           </div>
           <Button
