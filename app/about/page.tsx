@@ -295,7 +295,7 @@ const Aboutus = () => {
               </h1>
               <p className="text-lg text-white/80 leading-relaxed mb-8">
                 At Mamikim Academy, we bring world-class baking techniques to the Tanzanian kitchen. Our founder is a Chemical Engineer specialized  in Food Science, offering a unique scientific approach to the culinary arts.
-              </p>
+              </p> 
 
               <a href="/courses" target="_blank">
                 <button className="bg-orange-500 text-white px-8 py-4 rounded-lg hover:bg-orange-600 transition-colors font-semibold flex items-center">

@@ -19,6 +19,8 @@ import { supabase } from "@/lib/supabase/client";
 import { useUser } from "@/components/UserProvider";
 import { useCallback } from "react";
 import { createClient } from '@supabase/supabase-js';
+import { CourseComments } from "@/components/CourseComments";
+
 
 
 interface CourseChapter {
@@ -66,7 +68,11 @@ interface Course {
   total_chapters: number;
   total_duration: number;
   total_lessons: number;
+  instructor?: {
+    full_name: string;
+  };
 }
+
 
 function CoursePage({ params }: { params: { id: string } }) {
   // Use state to manage the payment status from the URL
@@ -131,8 +137,12 @@ function CoursePage({ params }: { params: { id: string } }) {
             level,
             ingredients,
             what_you_will_learn,
-            who_is_this_course_for
+            who_is_this_course_for,
+            instructor:instructor_id (
+              full_name
+            )
           `)
+
           .eq("id", params.id)
           .single();
 
@@ -210,8 +220,10 @@ function CoursePage({ params }: { params: { id: string } }) {
           subtitle: courseData.subtitle || "",
           description: courseData.description || "",
           level: courseData.level || "Beginner",
-          category: courseData.category || ""
+          category: courseData.category || "",
+          instructor: Array.isArray(courseData.instructor) ? courseData.instructor[0] : courseData.instructor
         };
+
 
         setCourse(fullCourse);
       } catch (err) {
@@ -766,12 +778,12 @@ function CoursePage({ params }: { params: { id: string } }) {
                 >
                   Ingredients
                 </button>
-                {/* <button 
+                <button
                   onClick={() => setActiveTab('discussion')}
                   className={`px-2 py-2 text-sm font-medium ${activeTab === 'discussion' ? 'border-b-2 border-orange-500' : 'text-muted-foreground'}`}
                 >
                   Discussion Forum
-                </button> */}
+                </button>
               </div>
             </div>
 
@@ -803,15 +815,12 @@ function CoursePage({ params }: { params: { id: string } }) {
                 </div>
               )}
 
-              {/* {activeTab === 'discussion' && (
-                <div>
-                  <h3 className="text-lg font-semibold mb-3">Discussion Forum</h3>
-                  <p className="text-muted-foreground">Join the discussion with other students and instructors.</p>
-                  <div className="mt-4 p-4 bg-muted rounded-lg text-center">
-                    <p className="text-sm text-muted-foreground">Discussion forum coming soon!</p>
-                  </div>
+              {activeTab === 'discussion' && (
+                <div className="mt-4">
+                  <CourseComments courseId={params.id} />
                 </div>
-              )} */}
+              )}
+
             </div>
 
             {/* Info Row */}
@@ -819,13 +828,16 @@ function CoursePage({ params }: { params: { id: string } }) {
               <div className="flex items-center gap-3">
                 <div className="text-sm">
                   <div className="text-muted-foreground">Instructor:</div>
-                  <div className="font-medium">{course_data.instructor_id ? 'Instructor' : 'Instructor'}</div>
+                  <div className="font-medium text-orange-600">
+                    {course_data.instructor?.full_name || 'Mamikim Academy'}
+                  </div>
                 </div>
               </div>
               <div className="text-sm">
                 <div className="text-muted-foreground">Category:</div>
-                <div className="font-medium">Baking</div>
+                <div className="font-medium">{course_data.category || 'Professional Baking'}</div>
               </div>
+
               <div className="text-sm flex items-center gap-2">
                 <div className="text-muted-foreground">Reviews:</div>
                 <div className="flex text-orange-500">
