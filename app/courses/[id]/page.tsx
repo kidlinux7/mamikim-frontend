@@ -803,46 +803,46 @@ function CoursePage({ params }: { params: { id: string } }) {
                   </div>
 
 
-                             {/* Info Row */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-center mb-6">
-              <div className="flex items-center gap-3">
-                <div className="text-sm">
-                  <div className="text-muted-foreground">Instructor:</div>
-                  <div className="font-medium text-orange-600">
-                    {course_data.instructor?.full_name || 'Mamikim Academy'}
+                  {/* Info Row */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-center mb-6">
+                    <div className="flex items-center gap-3">
+                      <div className="text-sm">
+                        <div className="text-muted-foreground">Instructor:</div>
+                        <div className="font-medium text-orange-600">
+                          {course_data.instructor?.full_name || 'Mamikim Academy'}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-sm">
+                      <div className="text-muted-foreground">Category:</div>
+                      <div className="font-medium">{course_data.category || 'Professional Baking'}</div>
+                    </div>
+
+                    <div className="text-sm flex items-center gap-2">
+                      <div className="text-muted-foreground">Reviews:</div>
+                      <div className="flex text-orange-500">
+                        {[...Array(5)].map((_, i) => (<Star key={i} className="h-4 w-4 fill-current" />))}
+                      </div>
+                      <span className="text-muted-foreground text-sm">(35)</span>
+                    </div>
+                    <div className="text-sm sm:col-span-2 flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-600" />
+                      <span>Enrolled students {enrollmentCount}</span>
+                    </div>
+                    <div className="text-right font-semibold text-lg lg:col-start-3">Price: {course_data.price ? `TZS ${course_data.price.toLocaleString()}` : 'Free'}</div>
                   </div>
-                </div>
-              </div>
-              <div className="text-sm">
-                <div className="text-muted-foreground">Category:</div>
-                <div className="font-medium">{course_data.category || 'Professional Baking'}</div>
-              </div>
 
-              <div className="text-sm flex items-center gap-2">
-                <div className="text-muted-foreground">Reviews:</div>
-                <div className="flex text-orange-500">
-                  {[...Array(5)].map((_, i) => (<Star key={i} className="h-4 w-4 fill-current" />))}
-                </div>
-                <span className="text-muted-foreground text-sm">(35)</span>
-              </div>
-              <div className="text-sm sm:col-span-2 flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-green-600" />
-                <span>Enrolled students {enrollmentCount}</span>
-              </div>
-              <div className="text-right font-semibold text-lg lg:col-start-3">Price: {course_data.price ? `TZS ${course_data.price.toLocaleString()}` : 'Free'}</div>
-            </div>
-
-            {/* What about it? */}
-            <div className="mb-6">
-              <h2 className="text-2xl font-semibold mb-3">What about it?</h2>
-              <p className="text-muted-foreground mb-4">{course_data.description}</p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* <div className="relative w-full h-56 rounded-lg overflow-hidden border">
+                  {/* What about it? */}
+                  <div className="mb-6">
+                    <h2 className="text-2xl font-semibold mb-3">What about it?</h2>
+                    <p className="text-muted-foreground mb-4">{course_data.description}</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* <div className="relative w-full h-56 rounded-lg overflow-hidden border">
                   <Image src={course_data.image_url || '/placeholder-course.jpg'} alt="course" fill style={{ objectFit: 'cover' }} />
                 </div> */}
 
-              </div>
-            </div>
+                    </div>
+                  </div>
 
 
 

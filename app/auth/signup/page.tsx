@@ -168,14 +168,14 @@ export default function SignUpPage() {
                               Learn Bakery as a student
                             </FormLabel>
                           </FormItem>
-                          <FormItem className="flex items-center space-x-3 space-y-0">
+                          {/* <FormItem className="flex items-center space-x-3 space-y-0">
                             <FormControl>
                               <RadioGroupItem value="tutor" />
                             </FormControl>
                             <FormLabel className="font-normal">
                               Teach Bakery as a tutor
                             </FormLabel>
-                          </FormItem>
+                          </FormItem> */}
                         </RadioGroup>
                       </FormControl>
                       <FormMessage />
