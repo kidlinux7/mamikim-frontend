@@ -801,29 +801,9 @@ function CoursePage({ params }: { params: { id: string } }) {
                       ))}
                     </ul>
                   </div>
-                </div>
-              )}
 
-              {activeTab === 'ingredients' && (
-                <div>
-                  <h3 className="text-lg font-semibold mb-3">Required Ingredients</h3>
-                  <ul className="list-disc list-inside space-y-1 text-muted-foreground">
-                    {course_data.ingredients.map((ingredient, index) => (
-                      <li key={index}>{ingredient}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
 
-              {activeTab === 'discussion' && (
-                <div className="mt-4">
-                  <CourseComments courseId={params.id} />
-                </div>
-              )}
-
-            </div>
-
-            {/* Info Row */}
+                             {/* Info Row */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-center mb-6">
               <div className="flex items-center gap-3">
                 <div className="text-sm">
@@ -863,6 +843,32 @@ function CoursePage({ params }: { params: { id: string } }) {
 
               </div>
             </div>
+
+
+
+                </div>
+              )}
+
+              {activeTab === 'ingredients' && (
+                <div>
+                  <h3 className="text-lg font-semibold mb-3">Required Ingredients</h3>
+                  <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                    {course_data.ingredients.map((ingredient, index) => (
+                      <li key={index}>{ingredient}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {activeTab === 'discussion' && (
+                <div className="mt-4">
+                  <CourseComments courseId={params.id} />
+                </div>
+              )}
+
+            </div>
+
+
           </div>
         </div>
       </div>
