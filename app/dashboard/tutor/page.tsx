@@ -53,7 +53,7 @@ interface DashboardStats {
 const courseFormSchema = z.object({
   title: z.string().min(1, "Title is required").max(100, "Title must be less than 100 characters"),
   subtitle: z.string().min(1, "Subtitle is required").max(200, "Subtitle must be less than 200 characters"),
-  introduction_video: z.string().min(1, "Introduction video link is required").max(200, "Introduction video link must be less than 200 characters"),
+  introduction_video: z.string().optional().nullable(),
   description: z.string().min(50, "Description must be at least 50 characters").max(1000, "Description must be less than 1000 characters"),
   price: z.number().min(0, "Price must be positive"),
   category: z.string().min(1, "Category is required"),
@@ -76,7 +76,7 @@ function ArrayField({
   placeholder
 }: {
   label: string;
-  name: "what_you_will_learn" | "ingredients" ;
+  name: "what_you_will_learn" | "ingredients";
   control: any;
   placeholder: string;
 }) {
@@ -343,20 +343,28 @@ export default function LecturerDashboard() {
     }
   }
 
-  async function uploadFile(file: File): Promise<string> {
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+  async function uploadToContabo(file: File): Promise<string> {
+    // 1. Get presigned URL
+    const res = await fetch("/api/upload", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        filename: file.name,
+        contentType: file.type,
+      }),
+    });
 
-    const { data, error } = await supabase.storage
-      .from('course-images')
-      .upload(fileName, file);
+    if (!res.ok) throw new Error("Failed to get upload URL");
+    const { uploadUrl, publicUrl } = await res.json();
 
-    if (error) throw error;
+    // 2. Upload to Contabo
+    const uploadRes = await fetch(uploadUrl, {
+      method: "PUT",
+      body: file,
+      headers: { "Content-Type": file.type },
+    });
 
-    const { data: { publicUrl } } = supabase.storage
-      .from('course-images')
-      .getPublicUrl(data.path);
-
+    if (!uploadRes.ok) throw new Error("Upload failed");
     return publicUrl;
   }
 
@@ -370,7 +378,15 @@ export default function LecturerDashboard() {
 
       let imageUrl = "";
       if (selectedFile) {
-        imageUrl = await uploadFile(selectedFile);
+        imageUrl = await uploadToContabo(selectedFile);
+      }
+
+      let introVideoUrl = data.introduction_video;
+      const introVideoInput = document.getElementById("introVideo") as HTMLInputElement;
+      const introVideoFile = introVideoInput?.files?.[0];
+
+      if (introVideoFile) {
+        introVideoUrl = await uploadToContabo(introVideoFile);
       }
 
       const { error } = await supabase
@@ -378,7 +394,7 @@ export default function LecturerDashboard() {
         .insert({
           title: data.title,
           subtitle: data.subtitle,
-          introduction_video: data.introduction_video,
+          introduction_video: introVideoUrl,
           description: data.description,
           price: data.price,
           category: data.category,
@@ -389,8 +405,7 @@ export default function LecturerDashboard() {
           what_you_will_learn: data.what_you_will_learn,
           ingredients: data.ingredients,
           who_is_this_course_for: data.who_is_this_course_for,
-           requirements: data.ingredients
-
+          requirements: data.ingredients
         });
 
       if (error) throw error;
@@ -430,7 +445,15 @@ export default function LecturerDashboard() {
 
       let imageUrl = courseToEdit.image_url;
       if (selectedFile) {
-        imageUrl = await uploadFile(selectedFile);
+        imageUrl = await uploadToContabo(selectedFile);
+      }
+
+      let introVideoUrl = data.introduction_video;
+      const introVideoInput = document.getElementById("introVideoEdit") as HTMLInputElement;
+      const introVideoFile = introVideoInput?.files?.[0];
+
+      if (introVideoFile) {
+        introVideoUrl = await uploadToContabo(introVideoFile);
       }
 
       const { error } = await supabase
@@ -438,7 +461,7 @@ export default function LecturerDashboard() {
         .update({
           title: data.title,
           subtitle: data.subtitle,
-          introduction_video: data.introduction_video,
+          introduction_video: introVideoUrl,
           description: data.description,
           price: data.price,
           category: data.category,
@@ -448,8 +471,7 @@ export default function LecturerDashboard() {
           what_you_will_learn: data.what_you_will_learn,
           ingredients: data.ingredients,
           who_is_this_course_for: data.who_is_this_course_for,
-           requirements: data.ingredients,
-
+          requirements: data.ingredients,
           updated_at: new Date().toISOString()
         })
         .eq('id', courseToEdit.id);
@@ -656,10 +678,14 @@ export default function LecturerDashboard() {
                       name="introduction_video"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Introduction Video Link</FormLabel>
+                          <FormLabel>Introduction Video (Link OR Upload)</FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter your introduction video link" {...field} />
+                            <Input placeholder="Enter video link" {...field} value={field.value || ""} />
                           </FormControl>
+                          <div className="mt-2">
+                            <Label htmlFor="introVideo" className="text-xs">OR Upload Video File</Label>
+                            <Input id="introVideo" type="file" accept="video/*" className="mt-1" />
+                          </div>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -704,7 +730,7 @@ export default function LecturerDashboard() {
                       )}
                     </div>
 
-                   {/* Category */}
+                    {/* Category */}
                     <FormField
                       control={form.control}
                       name="category"
@@ -883,10 +909,14 @@ export default function LecturerDashboard() {
                       name="introduction_video"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Introduction Video Link</FormLabel>
+                          <FormLabel>Introduction Video (Link OR Upload)</FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter your introduction video link" {...field} />
+                            <Input placeholder="Enter video link" {...field} value={field.value || ""} />
                           </FormControl>
+                          <div className="mt-2">
+                            <Label htmlFor="introVideoEdit" className="text-xs">OR Upload New Video</Label>
+                            <Input id="introVideoEdit" type="file" accept="video/*" className="mt-1" />
+                          </div>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -1127,7 +1157,7 @@ export default function LecturerDashboard() {
                                   hours: course.hours,
                                   what_you_will_learn: course.what_you_will_learn,
                                   ingredients: course.ingredients,
-                              
+
                                 });
                                 setFilePreview(course.image_url);
                                 setEditDialogOpen(true);

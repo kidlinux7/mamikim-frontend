@@ -20,6 +20,7 @@ import { useUser } from "@/components/UserProvider";
 import { useCallback } from "react";
 import { createClient } from '@supabase/supabase-js';
 import { CourseComments } from "@/components/CourseComments";
+import ReactPlayer from 'react-player';
 
 
 
@@ -73,6 +74,30 @@ interface Course {
   };
 }
 
+
+const Watermark = ({ email }: { email: string }) => {
+  const [position, setPosition] = useState({ top: '10%', left: '10%' });
+
+  useEffect(() => {
+    const moveWatermark = () => {
+      const top = Math.floor(Math.random() * 80) + 10;
+      const left = Math.floor(Math.random() * 80) + 10;
+      setPosition({ top: `${top}%`, left: `${left}%` });
+    };
+
+    const interval = setInterval(moveWatermark, 10000); // Move every 10 seconds
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div
+      className="absolute transition-all duration-1000 ease-in-out select-none opacity-20 text-[10px] md:text-sm font-mono text-white bg-black/40 px-3 py-1.5 rounded-full pointer-events-none whitespace-nowrap z-50 shadow-sm"
+      style={{ top: position.top, left: position.left }}
+    >
+      {email}
+    </div>
+  );
+};
 
 function CoursePage({ params }: { params: { id: string } }) {
   // Use state to manage the payment status from the URL
@@ -586,27 +611,33 @@ function CoursePage({ params }: { params: { id: string } }) {
         <div className="relative rounded-lg overflow-hidden mb-8 border">
           {isEnrolled && selectedContent ? (
             selectedContent.type === "video" && selectedContent.video_url ? (
-              (() => {
-                const videoId = getYouTubeVideoId(selectedContent.video_url);
-                return videoId ? (
-                  <iframe
-                    width="100%"
-                    height="420"
-                    src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
-                    title={selectedContent.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-[360px] md:h-[420px] rounded-lg"
-                  />
-                ) : (
-                  <div className="w-full h-[360px] md:h-[420px] bg-muted flex items-center justify-center">
-                    <div className="text-center text-muted-foreground">
-                      <Play className="w-16 h-16 mx-auto mb-2" />
-                      <p>Invalid Video URL</p>
-                    </div>
+              <div
+                className="relative w-full h-[360px] md:h-[420px] bg-black rounded-lg overflow-hidden"
+                onContextMenu={(e) => e.preventDefault()}
+              >
+                <ReactPlayer
+                  url={selectedContent.video_url}
+                  width="100%"
+                  height="100%"
+                  controls={true}
+                  playing={true}
+                  config={{
+                    file: {
+                      attributes: {
+                        controlsList: 'nodownload'
+                      }
+                    },
+                    youtube: {
+                      playerVars: { modestbranding: 1, rel: 0 }
+                    }
+                  }}
+                />
+                {user?.email && (
+                  <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                    <Watermark email={user.email} />
                   </div>
-                );
-              })()
+                )}
+              </div>
             ) : selectedContent.type === "document" && selectedContent.file_url ? (
               <iframe
                 src={selectedContent.file_url}
@@ -621,28 +652,28 @@ function CoursePage({ params }: { params: { id: string } }) {
                 </div>
               </div>
             )
-          ) : course_data.introduction_video && course_data.introduction_video.includes("youtube.com") ? (
-            (() => {
-              const videoId = getYouTubeVideoId(course_data.introduction_video);
-              return videoId ? (
-                <iframe
-                  width="100%"
-                  height="420"
-                  src={`https://www.youtube.com/embed/${videoId}`}
-                  title="Introduction Video"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="w-full h-[360px] md:h-[420px] rounded-lg"
-                />
-              ) : (
-                <div className="w-full h-[360px] md:h-[420px] bg-muted flex items-center justify-center">
-                  <div className="text-center text-muted-foreground">
-                    <Play className="w-16 h-16 mx-auto mb-2" />
-                    <p>Introduction Video</p>
-                  </div>
-                </div>
-              );
-            })()
+          ) : course_data.introduction_video ? (
+            <div
+              className="relative w-full h-[360px] md:h-[420px] bg-black rounded-lg overflow-hidden"
+              onContextMenu={(e) => e.preventDefault()}
+            >
+              <ReactPlayer
+                url={course_data.introduction_video}
+                width="100%"
+                height="100%"
+                controls={true}
+                config={{
+                  file: {
+                    attributes: {
+                      controlsList: 'nodownload'
+                    }
+                  },
+                  youtube: {
+                    playerVars: { modestbranding: 1, rel: 0 }
+                  }
+                }}
+              />
+            </div>
           ) : (
             <div className="w-full h-[360px] md:h-[420px] bg-muted flex items-center justify-center">
               <div className="text-center text-muted-foreground">

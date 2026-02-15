@@ -50,18 +50,24 @@ const chapterSchema = z.object({
 const contentSchema = z.object({
   title: z.string().min(1, "Title is required"),
   content_type: z.enum(["video", "document"]),
-  video_url: z.string().url("Must be a valid URL").optional().nullable(),
+  video_url: z.string()
+    .url("Must be a valid URL")
+    .refine((url) => url.includes("youtube.com") || url.includes("youtu.be"), {
+      message: "Must be a valid YouTube URL"
+    })
+    .optional()
+    .nullable(),
   file_url: z.string().optional().nullable(),
   duration: z.number().min(1, "Duration is required").optional().nullable(),
   pages: z.number().min(1, "Number of pages is required").optional().nullable(),
 }).refine((data) => {
   if (data.content_type === "video") {
-    // We allow video_url to be empty if the user is uploading a file
-    return true;
+    return data.video_url != null && data.duration != null;
   }
+  // Remove file_url validation since it's handled during upload
   return data.pages != null;
 }, {
-  message: "Please fill in all required fields"
+  message: "Please fill in all required fields for the selected content type"
 });
 
 type ChapterFormValues = z.infer<typeof chapterSchema>;
@@ -83,8 +89,6 @@ export default function CourseContent({ params: pageParams }: { params: { id: st
   const [students, setStudents] = useState<any[]>([]);
   const [studentsLoading, setStudentsLoading] = useState(true);
   const [studentsError, setStudentsError] = useState<string | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
 
   // Forms
   const chapterForm = useForm<ChapterFormValues>({
@@ -251,55 +255,75 @@ export default function CourseContent({ params: pageParams }: { params: { id: st
     if (!selectedChapter) return;
 
     try {
-      setIsUploading(true);
-      let fileUrl = data.video_url || null;
+      let fileUrl = null;
 
-      const fileInput = document.getElementById("contentFile") as HTMLInputElement;
-      const file = fileInput?.files?.[0];
+      if (data.content_type === "document") {
+        // Handle file upload to Supabase storage
+        const file = (document.getElementById("contentFile") as HTMLInputElement)?.files?.[0];
+        if (!file) {
+          toast({
+            title: "File required",
+            description: "Please select a document to upload",
+            variant: "destructive",
+          });
+          return;
+        }
 
-      if (file) {
-        // 1. Get presigned URL
-        const res = await fetch("/api/upload", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            filename: file.name,
-            contentType: file.type,
-          }),
-        });
+        // Validate file type
+        const allowedTypes = [
+          'application/pdf',
+          'application/msword',
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        ];
+        if (!allowedTypes.includes(file.type)) {
+          toast({
+            title: "Invalid file type",
+            description: "Please upload a PDF or Word document",
+            variant: "destructive",
+          });
+          return;
+        }
 
-        if (!res.ok) throw new Error("Failed to get upload URL");
+        // Validate file size (max 10MB)
+        const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+        if (file.size > maxSize) {
+          toast({
+            title: "File too large",
+            description: "Please upload a file smaller than 10MB",
+            variant: "destructive",
+          });
+          return;
+        }
 
-        const { uploadUrl, publicUrl } = await res.json();
+        try {
+          // Create a unique file name
+          const fileExt = file.name.split('.').pop();
+          const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
 
-        // 2. Upload to Contabo
-        const uploadRes = await fetch(uploadUrl, {
-          method: "PUT",
-          body: file,
-          headers: { "Content-Type": file.type },
-        });
+          // Upload to Supabase storage
+          const { data: uploadData, error: uploadError } = await supabase.storage
+            .from("course-content")
+            .upload(`documents/${fileName}`, file, {
+              cacheControl: '3600',
+              upsert: false
+            });
 
-        if (!uploadRes.ok) throw new Error("Upload failed");
+          if (uploadError) throw uploadError;
 
-        fileUrl = publicUrl;
-      }
+          // Get the public URL
+          const { data: { publicUrl } } = supabase.storage
+            .from("course-content")
+            .getPublicUrl(`documents/${fileName}`);
 
-      if (!fileUrl && data.content_type === "video" && !data.video_url) {
-        toast({
-          title: "Video required",
-          description: "Please provide a YouTube link or upload a video file.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      if (!fileUrl && data.content_type === "document") {
-        toast({
-          title: "File required",
-          description: "Please select a document to upload",
-          variant: "destructive",
-        });
-        return;
+          fileUrl = publicUrl;
+        } catch (error: any) {
+          toast({
+            title: "Upload failed",
+            description: error.message,
+            variant: "destructive",
+          });
+          return;
+        }
       }
 
       // Create the content record
@@ -309,8 +333,8 @@ export default function CourseContent({ params: pageParams }: { params: { id: st
           chapter_id: selectedChapter.id,
           title: data.title,
           content_type: data.content_type,
-          video_url: data.content_type === "video" ? fileUrl : null,
-          file_url: data.content_type === "document" ? fileUrl : null,
+          video_url: data.content_type === "video" ? data.video_url : null,
+          file_url: fileUrl, // Use the uploaded file URL
           duration: data.content_type === "video" ? data.duration : null,
           pages: data.content_type === "document" ? data.pages : null,
           position: selectedChapter.contents.length,
@@ -328,8 +352,6 @@ export default function CourseContent({ params: pageParams }: { params: { id: st
 
       contentForm.reset();
       setContentDialogOpen(false);
-      // Reset file input
-      if (fileInput) fileInput.value = "";
 
       toast({
         title: "Content added",
@@ -342,8 +364,6 @@ export default function CourseContent({ params: pageParams }: { params: { id: st
         description: error.message,
         variant: "destructive",
       });
-    } finally {
-      setIsUploading(false);
     }
   }
 
@@ -555,35 +575,21 @@ export default function CourseContent({ params: pageParams }: { params: { id: st
                                 name="video_url"
                                 render={({ field }) => (
                                   <FormItem>
-                                    <FormLabel>YouTube/External Link (Optional if uploading)</FormLabel>
+                                    <FormLabel>YouTube URL</FormLabel>
                                     <FormControl>
                                       <Input
                                         placeholder="e.g., https://youtube.com/watch?v=..."
                                         {...field}
                                         value={field.value || ""}
-                                        disabled={isUploading}
                                       />
                                     </FormControl>
                                     <FormMessage />
                                     <p className="text-sm text-muted-foreground">
-                                      Paste a link OR upload a video file below.
+                                      Paste a YouTube video URL (e.g., youtube.com/watch?v=... or youtu.be/...)
                                     </p>
                                   </FormItem>
                                 )}
                               />
-
-                              <div className="space-y-2">
-                                <Label htmlFor="contentFile">Upload Video (Directly to Contabo)</Label>
-                                <Input
-                                  id="contentFile"
-                                  type="file"
-                                  accept="video/*"
-                                  disabled={isUploading}
-                                />
-                                <p className="text-sm text-muted-foreground">
-                                  Select a video file to upload directly.
-                                </p>
-                              </div>
 
                               <FormField
                                 control={contentForm.control}
@@ -599,7 +605,6 @@ export default function CourseContent({ params: pageParams }: { params: { id: st
                                         {...field}
                                         onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : null)}
                                         value={field.value || ""}
-                                        disabled={isUploading}
                                       />
                                     </FormControl>
                                     <FormMessage />
@@ -615,7 +620,6 @@ export default function CourseContent({ params: pageParams }: { params: { id: st
                                   id="contentFile"
                                   type="file"
                                   accept=".pdf,.doc,.docx"
-                                  disabled={isUploading}
                                 />
                                 <p className="text-sm text-muted-foreground">
                                   Accepted formats: PDF, DOC, DOCX
@@ -636,7 +640,6 @@ export default function CourseContent({ params: pageParams }: { params: { id: st
                                         {...field}
                                         onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value) : null)}
                                         value={field.value || ""}
-                                        disabled={isUploading}
                                       />
                                     </FormControl>
                                     <FormMessage />
@@ -647,12 +650,10 @@ export default function CourseContent({ params: pageParams }: { params: { id: st
                           )}
 
                           <DialogFooter>
-                            <Button type="button" variant="outline" onClick={() => setContentDialogOpen(false)} disabled={isUploading}>
+                            <Button type="button" variant="outline" onClick={() => setContentDialogOpen(false)}>
                               Cancel
                             </Button>
-                            <Button type="submit" disabled={isUploading}>
-                              {isUploading ? "Uploading..." : "Add Content"}
-                            </Button>
+                            <Button type="submit">Add Content</Button>
                           </DialogFooter>
                         </form>
                       </Form>
