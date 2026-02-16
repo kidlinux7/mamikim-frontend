@@ -21,6 +21,7 @@ import { useCallback } from "react";
 import { createClient } from '@supabase/supabase-js';
 import { CourseComments } from "@/components/CourseComments";
 import ReactPlayer from 'react-player';
+import { encodeS3Url } from "@/lib/utils";
 
 
 
@@ -616,7 +617,7 @@ function CoursePage({ params }: { params: { id: string } }) {
                 onContextMenu={(e) => e.preventDefault()}
               >
                 <ReactPlayer
-                  url={selectedContent.video_url}
+                  url={encodeS3Url(selectedContent.video_url)}
                   width="100%"
                   height="100%"
                   controls={true}
@@ -640,7 +641,7 @@ function CoursePage({ params }: { params: { id: string } }) {
               </div>
             ) : selectedContent.type === "document" && selectedContent.file_url ? (
               <iframe
-                src={selectedContent.file_url}
+                src={encodeS3Url(selectedContent.file_url)}
                 title={selectedContent.title}
                 className="w-full h-[360px] md:h-[600px] rounded-lg border-none"
               />
@@ -658,7 +659,7 @@ function CoursePage({ params }: { params: { id: string } }) {
               onContextMenu={(e) => e.preventDefault()}
             >
               <ReactPlayer
-                url={course_data.introduction_video}
+                url={encodeS3Url(course_data.introduction_video)}
                 width="100%"
                 height="100%"
                 controls={true}
@@ -755,7 +756,7 @@ function CoursePage({ params }: { params: { id: string } }) {
                 {recommendations.map((rc) => (
                   <div key={rc.id} className="flex items-center gap-3">
                     <div className="w-16 h-12 rounded overflow-hidden bg-muted relative">
-                      <Image src={rc.image_url || '/placeholder-course.jpg'} alt={rc.title} fill style={{ objectFit: 'cover' }} />
+                      <Image src={encodeS3Url(rc.image_url) || '/placeholder-course.jpg'} alt={rc.title} fill style={{ objectFit: 'cover' }} />
                     </div>
                     <div className="flex-1">
                       <p className="text-sm line-clamp-1">{rc.title}</p>

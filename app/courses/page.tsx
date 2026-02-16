@@ -23,6 +23,7 @@ interface Course {
 }
 
 import { CourseFilters } from "@/components/CourseFilters";
+import { encodeS3Url } from "@/lib/utils";
 
 export default function CoursesPage() {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -35,7 +36,7 @@ export default function CoursesPage() {
   const [levelFilter, setLevelFilter] = useState<string>("Latest");
   const [durationFilter, setDurationFilter] = useState<string>("All");
   const [categoryFilter, setCategoryFilter] = useState<string>("All");
-  
+
 
   // Enrollment counts: { [course_id]: count }
   const [enrollmentCounts, setEnrollmentCounts] = useState<{ [key: string]: number }>({});
@@ -214,7 +215,7 @@ export default function CoursesPage() {
                     <div className="w-full h-48 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
                       {course.image_url ? (
                         <Image
-                          src={course.image_url}
+                          src={encodeS3Url(course.image_url)}
                           alt={course.title}
                           width={200}
                           height={200}

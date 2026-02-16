@@ -21,10 +21,11 @@ export async function POST(req: NextRequest) {
             Bucket: BUCKET_NAME,
             Key: key,
             ContentType: contentType,
+            ACL: 'public-read', // Ensure the uploaded file is publicly accessible
         });
 
         const uploadUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
-        const publicUrl = `${process.env.CONTABO_ENDPOINT}/${BUCKET_NAME}/${key}`;
+        const publicUrl = `${process.env.CONTABO_ENDPOINT}/${BUCKET_NAME}/${key.split('/').map(segment => encodeURIComponent(segment)).join('/')}`;
 
         return NextResponse.json({ uploadUrl, publicUrl, key });
     } catch (error) {
