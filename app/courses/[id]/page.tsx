@@ -618,6 +618,7 @@ function CoursePage({ params }: { params: { id: string } }) {
               >
                 <ReactPlayer
                   url={encodeS3Url(selectedContent.video_url)}
+                  // url={"https://eu2.contabostorage.com/0190a771-488e-4074-8248-742091122414/mamikim-bucket/videos/1755375471621_1755375471621.mp4"}
                   width="100%"
                   height="100%"
                   controls={true}
