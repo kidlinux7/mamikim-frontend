@@ -276,7 +276,10 @@ export default function CourseContent({ params: pageParams }: { params: { id: st
         const uploadRes = await fetch(uploadUrl, {
           method: "PUT",
           body: file,
-          headers: { "Content-Type": file.type },
+          headers: {
+            "Content-Type": file.type,
+            "x-amz-acl": "public-read"
+          },
         });
 
         if (!uploadRes.ok) throw new Error("Upload failed");

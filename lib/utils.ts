@@ -25,28 +25,53 @@ export function getUserInitials(email: string): string {
 export function encodeS3Url(url: string | null | undefined): string {
   if (!url) return '';
 
-  // If it's already encoded or doesn't have spaces, we can still run it through URL
-  // to ensure it's valid, but specifically we want to handle raw paths with spaces
   try {
-    // Check if it's already a full URL
-    const urlObj = new URL(url);
+    // Attempt to parse as a full URL
+    let urlObj: URL;
+    try {
+      urlObj = new URL(url);
+    } catch (e) {
+      // If it's just a path (e.g. "videos/..."), construct the full URL
+      const endpoint = process.env.NEXT_PUBLIC_CONTABO_ENDPOINT || 'https://eu2.contabostorage.com';
+      const tenantId = process.env.NEXT_PUBLIC_CONTABO_TENANT_ID || '7f46490e5a1444b7936e15fd196f9685';
+      const bucket = process.env.NEXT_PUBLIC_CONTABO_BUCKET_NAME || 'coursecontent';
 
-    // Check if it's a Contabo URL
+      const cleanPath = url.startsWith('/') ? url.substring(1) : url;
+      // Handle if the path already starts with the bucket name
+      const finalPath = cleanPath.startsWith(`${bucket}/`)
+        ? cleanPath.substring(bucket.length + 1)
+        : cleanPath;
+
+      const encodedKey = finalPath.split('/').map(s => encodeURIComponent(s)).join('/');
+      return `${endpoint}/${tenantId}:${bucket}/${encodedKey}`;
+    }
+
     if (urlObj.hostname.includes('contabostorage.com')) {
-      // In S3-style URLs, the pathname needs to be encoded, but we must preserve slashes
-      const segments = urlObj.pathname.split('/');
-      const encodedSegments = segments.map(segment => encodeURIComponent(segment));
-      urlObj.pathname = encodedSegments.join('/');
+      const tenantId = process.env.NEXT_PUBLIC_CONTABO_TENANT_ID || '7f46490e5a1444b7936e15fd196f9685';
+      const bucket = process.env.NEXT_PUBLIC_CONTABO_BUCKET_NAME || 'coursecontent';
 
-      // Some browsers/players have issues with double encoded paths, 
-      // but URL() handles the structure. We need to decode the %2F back to /
-      // Actually urlObj.pathname = ... already handles the / correctly if we set it as a string
-      return urlObj.toString().replace(/%2F/g, '/');
+      let pathname = urlObj.pathname;
+      if (pathname.startsWith('/')) pathname = pathname.substring(1);
+
+      // If it already has the colon format, just ensure the rest of the key is encoded
+      if (pathname.includes(':')) {
+        const segments = pathname.split('/');
+        const firstSegment = segments[0]; // tenant:bucket
+        const restOfPath = segments.slice(1).map(s => encodeURIComponent(s)).join('/');
+        return `${urlObj.origin}/${firstSegment}/${restOfPath}`;
+      }
+
+      // If it starts with the bucket name, extract the key
+      if (pathname.startsWith(`${bucket}/`)) {
+        pathname = pathname.substring(bucket.length + 1);
+      }
+
+      const encodedKey = pathname.split('/').map(s => encodeURIComponent(s)).join('/');
+      return `${urlObj.origin}/${tenantId}:${bucket}/${encodedKey}`;
     }
 
     return url;
   } catch (e) {
-    // If not a valid URL, it might be a relative path or just a broken string
     return url.replace(/ /g, '%20');
   }
 }
