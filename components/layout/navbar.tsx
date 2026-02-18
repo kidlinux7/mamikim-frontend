@@ -92,9 +92,9 @@ const Navbar = () => {
             <div className="flex items-center space-x-4 mt-2 sm:mt-0">
               <span>We&apos;re active on</span>
               <div className="flex space-x-2">
-                <a target='_blank' href="https://www.instagram.com/mamikimcakeacademy?igsh=dnpmdWl4bXM5MTFj">
+                {/* <a target='_blank' href="https://www.instagram.com/mamikimcakeacademy?igsh=dnpmdWl4bXM5MTFj">
                   <BsTiktok />
-                </a>
+                </a> */}
                 <a target='_blank' href="https://youtube.com/@mamikimcakeacademy2130?si=pH7mNyZPtu4BQsfs">
                   <SiYoutube />
                  </a>
