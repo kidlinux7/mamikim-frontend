@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, Users, Award, CheckCircle, ArrowRight, Star, Calendar, Search, Globe, X } from "lucide-react";
+import { BookOpen, Users, Award, CheckCircle, ArrowRight, Star, Calendar, Search, Globe, X, Instagram, Twitter, Linkedin, Facebook } from "lucide-react";
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -105,28 +105,32 @@ const Aboutus = () => {
 
   const advisors = [
     {
-      image: "/api/placeholder/120/120",
+      image: "/images/aboutus2.jpeg",
+      name: "Eng. Mamikim",
+      title: "Founder & Lead Instructor",
+      specialty: "Food Science & Chemical Engineering",
+      rating: 5.0
+    },
+    {
+      image: "/images/progress.jpeg",
       name: "Sarah Johnson",
-      title: "Baking Expert",
+      title: "Pastry Expert",
+      specialty: "International Pastries",
       rating: 4.9
     },
     {
-      image: "/api/placeholder/120/120",
-      name: "Jennifer Wilson",
-      title: "Pastry Chef",
+      image: "/images/Natalia.jpeg",
+      name: "Natalia Eric Msungu",
+      title: "Content & Communication Specialist",
+      specialty: "",
       rating: 4.8
     },
     {
-      image: "/api/placeholder/120/120",
+      image: "/images/aboutus2.jpeg",
       name: "Michael Brown",
-      title: "Culinary Artist",
+      title: "Bakery Consultant",
+      specialty: "Business Management",
       rating: 4.9
-    },
-    {
-      image: "/api/placeholder/120/120",
-      name: "Emily Davis",
-      title: "Cake Designer",
-      rating: 4.7
     }
   ];
 
@@ -295,7 +299,7 @@ const Aboutus = () => {
               </h1>
               <p className="text-lg text-white/80 leading-relaxed mb-8">
                 At Mamikim Academy, we bring world-class baking techniques to the Tanzanian kitchen. Our founder is a Chemical Engineer specialized  in Food Science, offering a unique scientific approach to the culinary arts.
-              </p> 
+              </p>
 
               <a href="/courses" target="_blank">
                 <button className="bg-orange-500 text-white px-8 py-4 rounded-lg hover:bg-orange-600 transition-colors font-semibold flex items-center">
@@ -505,6 +509,72 @@ const Aboutus = () => {
 
 
 
+
+
+
+      {/* Team Section */}
+      <section className="py-24 bg-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <div className="flex items-center justify-center mb-4">
+              <div className="w-12 h-0.5 bg-orange-500 mr-3"></div>
+              <span className="text-orange-600 font-semibold uppercase tracking-widest text-sm">Professional Team</span>
+              <div className="w-12 h-0.5 bg-orange-500 ml-3"></div>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">
+              Meet Our Expert Advisors
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Our team consists of industry veterans and academic experts dedicated to your culinary success and entrepreneurial growth.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {advisors.map((advisor, index) => (
+              <div key={index} className="group relative">
+                {/* Advisor Card */}
+                <div className="relative aspect-[4/5] overflow-hidden rounded-2xl shadow-xl transition-all duration-500 group-hover:-translate-y-2">
+                  <Image
+                    src={advisor.image}
+                    alt={advisor.name}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+
+                  {/* Overlay on Hover */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6">
+                    <div className="flex gap-4 mb-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-100">
+                      <a href="#" className="p-2 bg-white/10 backdrop-blur-md rounded-full text-white hover:bg-orange-500 transition-colors">
+                        <Instagram className="w-5 h-5" />
+                      </a>
+                      <a href="#" className="p-2 bg-white/10 backdrop-blur-md rounded-full text-white hover:bg-orange-500 transition-colors">
+                        <Facebook className="w-5 h-5" />
+                      </a>
+                      <a href="#" className="p-2 bg-white/10 backdrop-blur-md rounded-full text-white hover:bg-orange-500 transition-colors">
+                        <Linkedin className="w-5 h-5" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Info Below Card */}
+                <div className="mt-6 text-center">
+                  <h3 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-orange-500 transition-colors">
+                    {advisor.name}
+                  </h3>
+                  <div className="text-orange-600 font-medium text-sm mb-2">{advisor.title}</div>
+                  {/* <p className="text-gray-500 text-sm line-clamp-1">{advisor.specialty}</p> */}
+
+                  {/* <div className="mt-3 flex items-center justify-center gap-1">
+                    <Star className="w-4 h-4 fill-orange-500 text-orange-500" />
+                    <span className="text-sm font-bold text-gray-700">{advisor.rating.toFixed(1)}</span>
+                  </div> */}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
