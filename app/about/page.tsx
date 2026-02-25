@@ -106,12 +106,12 @@ const Aboutus = () => {
   const advisors = [
     {
       image: "/images/mercy.jpeg",
-      name: "Mercy Kobelo",
+      name: "Eng. Mercy Kobelo",
       title: "Founder & CEO",
       specialty: "Food Science & Chemical Engineering",
       rating: 5.0
     },
-        {
+    {
       image: "/images/Natalia.jpeg",
       name: "Natalia Eric Msungu",
       title: "Content & Communication Specialist",
@@ -119,17 +119,17 @@ const Aboutus = () => {
       rating: 4.8
     },
     {
-      image: "/images/progress.jpeg",
-      name: "Sarah Johnson",
-      title: "Pastry Expert",
+      image: "/images/lulu.jpeg",
+      name: "Lulu Ngoi",
+      title: "Assistant Trainer & Baker",
       specialty: "International Pastries",
       rating: 4.9
     },
 
     {
-      image: "/images/aboutus2.jpeg",
-      name: "Michael Brown",
-      title: "Bakery Consultant",
+      image: "/images/prince.jpg",
+      name: "Prince Herman Mutungi",
+      title: "Technical Lead",
       specialty: "Business Management",
       rating: 4.9
     }
