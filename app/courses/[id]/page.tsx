@@ -1,6 +1,7 @@
 "use client";
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { SetStateAction, useEffect, useState } from "react";
 import { notFound, useRouter } from "next/navigation";
@@ -48,6 +49,8 @@ interface CourseSummary {
   title: string;
   image_url: string | null;
   price: number;
+  discount: number;
+  free: boolean;
 }
 
 interface Course {
@@ -297,7 +300,7 @@ function CoursePage({ params }: { params: { id: string } }) {
     async function fetchRecommendations() {
       const { data } = await supabase
         .from('courses')
-        .select('id,title,image_url,price')
+        .select('id,title,image_url,price,discount,free')
         .neq('id', params.id)
         .limit(3);
       setRecommendations((data || []) as CourseSummary[]);
@@ -755,15 +758,42 @@ function CoursePage({ params }: { params: { id: string } }) {
               </CardHeader>
               <CardContent className="space-y-4">
                 {recommendations.map((rc) => (
-                  <div key={rc.id} className="flex items-center gap-3">
-                    <div className="w-16 h-12 rounded overflow-hidden bg-muted relative">
-                      <Image src={encodeS3Url(rc.image_url) || '/placeholder-course.jpg'} alt={rc.title} fill style={{ objectFit: 'cover' }} />
+                  <Link
+                    key={rc.id}
+                    href={`/courses/${rc.id}`}
+                    className="flex items-center gap-3 hover:bg-muted/50 p-2 rounded-lg transition-colors group"
+                  >
+                    <div className="w-16 h-12 rounded overflow-hidden bg-muted relative shrink-0">
+                      <Image
+                        src={encodeS3Url(rc.image_url) || '/placeholder-course.jpg'}
+                        alt={rc.title}
+                        fill
+                        style={{ objectFit: 'cover' }}
+                        className="group-hover:scale-105 transition-transform duration-300"
+                      />
                     </div>
-                    <div className="flex-1">
-                      <p className="text-sm line-clamp-1">{rc.title}</p>
-                      <p className="text-xs text-muted-foreground">{rc.price ? `TZS ${rc.price.toLocaleString()}` : 'Free'}</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm line-clamp-1 font-medium group-hover:text-orange-600 transition-colors">
+                        {rc.title}
+                      </p>
+                      <div className="text-xs text-muted-foreground">
+                        {rc.free ? (
+                          <span className="text-green-600 font-medium">Free</span>
+                        ) : rc.discount && rc.discount > 0 ? (
+                          <div className="flex flex-col">
+                            <span className="line-through text-[10px] opacity-70">
+                              TZS {rc.price.toLocaleString()}
+                            </span>
+                            <span className="text-orange-600">
+                              TZS {rc.discount.toLocaleString()}
+                            </span>
+                          </div>
+                        ) : (
+                          `TZS ${rc.price.toLocaleString()}`
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </CardContent>
             </Card>
@@ -837,7 +867,7 @@ function CoursePage({ params }: { params: { id: string } }) {
 
 
                   {/* Info Row */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-center mb-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-center mb-6 mt-8">
                     <div className="flex items-center gap-3">
                       <div className="text-sm">
                         <div className="text-muted-foreground">Instructor:</div>
@@ -862,7 +892,29 @@ function CoursePage({ params }: { params: { id: string } }) {
                       <CheckCircle className="h-4 w-4 text-green-600" />
                       <span>Enrolled students {enrollmentCount}</span>
                     </div>
-                    <div className="text-right font-semibold text-lg lg:col-start-3">Price: {course_data.price ? `TZS ${course_data.price.toLocaleString()}` : 'Free'}</div>
+                    <div className="text-right text-lg lg:col-start-3">
+                      <span className="font-semibold mr-2">Price:</span>
+                      {course_data.free ? (
+                        <span className="text-green-600 font-bold">Free</span>
+                      ) : (
+                        <div className="inline-flex flex-col items-end align-middle">
+                          {course_data.discount && course_data.discount > 0 ? (
+                            <>
+                              <span className="text-xs text-muted-foreground line-through">
+                                TZS {course_data.price.toLocaleString()}
+                              </span>
+                              <span className="text-orange-600 font-bold">
+                                TZS {course_data.discount.toLocaleString()}
+                              </span>
+                            </>
+                          ) : (
+                            <span className="font-bold">
+                              TZS {course_data.price.toLocaleString()}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   {/* What about it? */}
@@ -895,7 +947,7 @@ function CoursePage({ params }: { params: { id: string } }) {
 
               {activeTab === 'discussion' && (
                 <div className="mt-4">
-                  <CourseComments courseId={params.id} />
+                  <CourseComments courseId={params.id} isEnrolled={isEnrolled} />
                 </div>
               )}
 

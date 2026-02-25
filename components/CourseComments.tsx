@@ -30,9 +30,10 @@ interface Comment {
 
 interface CourseCommentsProps {
     courseId: string;
+    isEnrolled: boolean;
 }
 
-export function CourseComments({ courseId }: CourseCommentsProps) {
+export function CourseComments({ courseId, isEnrolled }: CourseCommentsProps) {
     const { user } = useUser();
     const [comments, setComments] = useState<Comment[]>([]);
     const [newComment, setNewComment] = useState("");
@@ -84,7 +85,7 @@ export function CourseComments({ courseId }: CourseCommentsProps) {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!user || !newComment.trim() || submitting) return;
+        if (!user || !isEnrolled || !newComment.trim() || submitting) return;
 
         try {
             setSubmitting(true);
@@ -175,38 +176,47 @@ export function CourseComments({ courseId }: CourseCommentsProps) {
             </div>
 
             {user ? (
-                <form onSubmit={handleSubmit} className="space-y-4 bg-orange-50/30 p-4 rounded-xl border border-orange-100/50">
-                    <div className="flex gap-3">
-                        <Avatar className="h-10 w-10 border-2 border-white shadow-sm">
-                            <AvatarImage src={user.user_metadata?.avatar_url} />
-                            <AvatarFallback className="bg-orange-100 text-orange-700 font-medium">
-                                {getUserInitials(user.email || "User")}
-                            </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 space-y-3">
-                            <Textarea
-                                placeholder="Share your thoughts or ask a question..."
-                                value={newComment}
-                                onChange={(e) => setNewComment(e.target.value)}
-                                className="min-h-[100px] bg-white resize-none border-orange-100 focus:border-orange-500 focus:ring-orange-500/20 transition-all rounded-xl"
-                            />
-                            <div className="flex justify-end">
-                                <Button
-                                    type="submit"
-                                    disabled={!newComment.trim() || submitting}
-                                    className="bg-orange-500 hover:bg-orange-600 text-white gap-2 px-6 rounded-lg font-medium shadow-lg shadow-orange-500/20"
-                                >
-                                    {submitting ? (
-                                        <Loader2 className="h-4 w-4 animate-spin" />
-                                    ) : (
-                                        <Send className="h-4 w-4" />
-                                    )}
-                                    Post Comment
-                                </Button>
+                isEnrolled ? (
+                    <form onSubmit={handleSubmit} className="space-y-4 bg-orange-50/30 p-4 rounded-xl border border-orange-100/50">
+                        <div className="flex gap-3">
+                            <Avatar className="h-10 w-10 border-2 border-white shadow-sm">
+                                <AvatarImage src={user.user_metadata?.avatar_url} />
+                                <AvatarFallback className="bg-orange-100 text-orange-700 font-medium">
+                                    {getUserInitials(user.email || "User")}
+                                </AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 space-y-3">
+                                <Textarea
+                                    placeholder="Share your thoughts or ask a question..."
+                                    value={newComment}
+                                    onChange={(e) => setNewComment(e.target.value)}
+                                    className="min-h-[100px] bg-white resize-none border-orange-100 focus:border-orange-500 focus:ring-orange-500/20 transition-all rounded-xl"
+                                />
+                                <div className="flex justify-end">
+                                    <Button
+                                        type="submit"
+                                        disabled={!newComment.trim() || submitting}
+                                        className="bg-orange-500 hover:bg-orange-600 text-white gap-2 px-6 rounded-lg font-medium shadow-lg shadow-orange-500/20"
+                                    >
+                                        {submitting ? (
+                                            <Loader2 className="h-4 w-4 animate-spin" />
+                                        ) : (
+                                            <Send className="h-4 w-4" />
+                                        )}
+                                        Post Comment
+                                    </Button>
+                                </div>
                             </div>
                         </div>
+                    </form>
+                ) : (
+                    <div className="p-6 text-center bg-gray-50 rounded-xl border border-dashed border-gray-300">
+                        <p className="text-muted-foreground mb-4">You must be enrolled in this course to join the discussion.</p>
+                        <Button variant="outline" className="rounded-lg cursor-default hover:bg-transparent">
+                            Enroll to Comment
+                        </Button>
                     </div>
-                </form>
+                )
             ) : (
                 <div className="p-6 text-center bg-gray-50 rounded-xl border border-dashed border-gray-300">
                     <p className="text-muted-foreground mb-4">Please log in to join the discussion.</p>

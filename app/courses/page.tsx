@@ -20,6 +20,8 @@ interface Course {
   rating: number;
   students_count: number;
   created_at: string;
+  free: boolean;
+  discount: number;
 }
 
 import { CourseFilters } from "@/components/CourseFilters";
@@ -282,7 +284,18 @@ export default function CoursesPage() {
                         <ArrowRight className="ml-1 h-3 w-3" />
                       </button>
                       <span className="text-orange-500 font-semibold">
-                        {course.price === 0 ? "Free" : `TZS ${course.price.toLocaleString()}`}
+                        {course.free ? (
+                          <span className="text-green-600">Free</span>
+                        ) : course.discount && course.discount > 0 ? (
+                          <div className="flex flex-col items-end">
+                            <span className="text-[10px] text-muted-foreground line-through opacity-70">
+                              TZS {course.price.toLocaleString()}
+                            </span>
+                            <span>TZS {course.discount.toLocaleString()}</span>
+                          </div>
+                        ) : (
+                          `TZS ${course.price.toLocaleString()}`
+                        )}
                       </span>
                     </div>
                   </div>

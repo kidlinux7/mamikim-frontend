@@ -105,11 +105,18 @@ const Aboutus = () => {
 
   const advisors = [
     {
-      image: "/images/aboutus2.jpeg",
-      name: "Eng. Mamikim",
-      title: "Founder & Lead Instructor",
+      image: "/images/mercy.jpeg",
+      name: "Mercy Kobelo",
+      title: "Founder & CEO",
       specialty: "Food Science & Chemical Engineering",
       rating: 5.0
+    },
+        {
+      image: "/images/Natalia.jpeg",
+      name: "Natalia Eric Msungu",
+      title: "Content & Communication Specialist",
+      specialty: "",
+      rating: 4.8
     },
     {
       image: "/images/progress.jpeg",
@@ -118,13 +125,7 @@ const Aboutus = () => {
       specialty: "International Pastries",
       rating: 4.9
     },
-    {
-      image: "/images/Natalia.jpeg",
-      name: "Natalia Eric Msungu",
-      title: "Content & Communication Specialist",
-      specialty: "",
-      rating: 4.8
-    },
+
     {
       image: "/images/aboutus2.jpeg",
       name: "Michael Brown",
@@ -506,10 +507,6 @@ const Aboutus = () => {
         </div>
 
       </section>
-
-
-
-
 
 
       {/* Team Section */}

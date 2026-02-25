@@ -18,6 +18,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
 import { useFieldArray } from "react-hook-form";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 // Types
 interface Course {
@@ -39,6 +40,8 @@ interface Course {
   who_is_this_course_for: string[];
   requirements: string[];
   updated_at: string;
+  free: boolean;
+  discount: number;
 
 }
 
@@ -63,6 +66,8 @@ const courseFormSchema = z.object({
   ingredients: z.array(z.string()).min(1, "Add at least one requirement"),
   who_is_this_course_for: z.array(z.string()).min(1, "Add at least one requirement"),
   requirements: z.array(z.string()).min(1, "Add at least one requirement"),
+  free: z.boolean().default(false),
+  discount: z.number().min(0, "Discount price must be positive").optional().nullable(),
 
 });
 
@@ -76,7 +81,7 @@ function ArrayField({
   placeholder
 }: {
   label: string;
-  name: "what_you_will_learn" | "ingredients";
+  name: "what_you_will_learn" | "ingredients" | "who_is_this_course_for" | "requirements";
   control: any;
   placeholder: string;
 }) {
@@ -178,8 +183,9 @@ export default function LecturerDashboard() {
       what_you_will_learn: [""],
       ingredients: [""],
       who_is_this_course_for: [""],
-      requirements: [""]
-
+      requirements: [""],
+      free: false,
+      discount: 0
     }
   });
 
@@ -197,8 +203,9 @@ export default function LecturerDashboard() {
       what_you_will_learn: [""],
       ingredients: [""],
       who_is_this_course_for: [""],
-      requirements: [""]
-
+      requirements: [""],
+      free: false,
+      discount: 0
     }
   });
 
@@ -405,7 +412,9 @@ export default function LecturerDashboard() {
           what_you_will_learn: data.what_you_will_learn,
           ingredients: data.ingredients,
           who_is_this_course_for: data.who_is_this_course_for,
-          requirements: data.ingredients
+          requirements: data.ingredients,
+          free: data.free,
+          discount: data.discount
         });
 
       if (error) throw error;
@@ -472,6 +481,8 @@ export default function LecturerDashboard() {
           ingredients: data.ingredients,
           who_is_this_course_for: data.who_is_this_course_for,
           requirements: data.ingredients,
+          free: data.free,
+          discount: data.discount,
           updated_at: new Date().toISOString()
         })
         .eq('id', courseToEdit.id);
@@ -641,7 +652,14 @@ export default function LecturerDashboard() {
                 </DialogHeader>
 
                 <Form {...form}>
-                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                  <form onSubmit={form.handleSubmit(onSubmit, (errors) => {
+                    console.error("Form errors:", errors);
+                    toast({
+                      title: "Validation Error",
+                      description: "Please check the form for errors: " + Object.keys(errors).join(", "),
+                      variant: "destructive",
+                    });
+                  })} className="space-y-6">
                     {/* Title */}
                     <FormField
                       control={form.control}
@@ -736,7 +754,7 @@ export default function LecturerDashboard() {
                       name="category"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Level</FormLabel>
+                          <FormLabel>Category</FormLabel>
                           <FormControl>
                             <Select onValueChange={field.onChange} value={field.value}>
                               <SelectTrigger>
@@ -757,7 +775,6 @@ export default function LecturerDashboard() {
                       )}
                     />
 
-                    {/* Price and Hours */}
                     <div className="grid grid-cols-2 gap-4">
                       <FormField
                         control={form.control}
@@ -790,6 +807,59 @@ export default function LecturerDashboard() {
                                 min="1"
                                 {...field}
                                 onChange={(e) => field.onChange(Number(e.target.value))}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      {/* Free status */}
+                      <FormField
+                        control={form.control}
+                        name="free"
+                        render={({ field }) => (
+                          <FormItem className="space-y-3">
+                            <FormLabel>Course Status</FormLabel>
+                            <FormControl>
+                              <RadioGroup
+                                onValueChange={(value) => field.onChange(value === "true")}
+                                value={field.value ? "true" : "false"}
+                                className="flex flex-row space-x-4"
+                              >
+                                <div className="flex items-center space-x-2">
+                                  <RadioGroupItem value="false" id="course_paid" />
+                                  <Label htmlFor="course_paid">Paid</Label>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                  <RadioGroupItem value="true" id="course_free" />
+                                  <Label htmlFor="course_free">Free</Label>
+                                </div>
+                              </RadioGroup>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      {/* Discount Price */}
+                      <FormField
+                        control={form.control}
+                        name="discount"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Discount Price (TZS)</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                min="0"
+                                placeholder="0"
+                                {...field}
+                                value={field.value || ""}
+                                onChange={(e) => field.onChange(Number(e.target.value))}
+                                disabled={form.watch("free")}
                               />
                             </FormControl>
                             <FormMessage />
@@ -872,7 +942,14 @@ export default function LecturerDashboard() {
                 </DialogHeader>
 
                 <Form {...editForm}>
-                  <form onSubmit={editForm.handleSubmit(onUpdate)} className="space-y-6">
+                  <form onSubmit={editForm.handleSubmit(onUpdate, (errors) => {
+                    console.error("Form errors:", errors);
+                    toast({
+                      title: "Validation Error",
+                      description: "Please check the form for errors: " + Object.keys(errors).join(", "),
+                      variant: "destructive",
+                    });
+                  })} className="space-y-6">
                     {/* Title */}
                     <FormField
                       control={editForm.control}
@@ -961,7 +1038,33 @@ export default function LecturerDashboard() {
                       )}
                     </div>
 
-                    {/* Price and Hours */}
+                    {/* Category */}
+                    <FormField
+                      control={editForm.control}
+                      name="category"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Category</FormLabel>
+                          <FormControl>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select a Category" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectGroup>
+                                  <SelectItem value="Baking">Baking</SelectItem>
+                                  <SelectItem value="Business Management">Business Management</SelectItem>
+                                  <SelectItem value="Digital Marketing">Digital Marketing</SelectItem>
+                                  <SelectItem value="Content Creation">Content Creation</SelectItem>
+                                </SelectGroup>
+                              </SelectContent>
+                            </Select>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
                     <div className="grid grid-cols-2 gap-4">
                       <FormField
                         control={editForm.control}
@@ -994,6 +1097,59 @@ export default function LecturerDashboard() {
                                 min="1"
                                 {...field}
                                 onChange={(e) => field.onChange(Number(e.target.value))}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      {/* Free status */}
+                      <FormField
+                        control={editForm.control}
+                        name="free"
+                        render={({ field }) => (
+                          <FormItem className="space-y-3">
+                            <FormLabel>Course Status</FormLabel>
+                            <FormControl>
+                              <RadioGroup
+                                onValueChange={(value) => field.onChange(value === "true")}
+                                value={field.value ? "true" : "false"}
+                                className="flex flex-row space-x-4"
+                              >
+                                <div className="flex items-center space-x-2">
+                                  <RadioGroupItem value="false" id="edit_course_paid" />
+                                  <Label htmlFor="edit_course_paid">Paid</Label>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                  <RadioGroupItem value="true" id="edit_course_free" />
+                                  <Label htmlFor="edit_course_free">Free</Label>
+                                </div>
+                              </RadioGroup>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      {/* Discount Price */}
+                      <FormField
+                        control={editForm.control}
+                        name="discount"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Discount Price (TZS)</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                min="0"
+                                placeholder="0"
+                                {...field}
+                                value={field.value || ""}
+                                onChange={(e) => field.onChange(Number(e.target.value))}
+                                disabled={editForm.watch("free")}
                               />
                             </FormControl>
                             <FormMessage />
@@ -1122,7 +1278,22 @@ export default function LecturerDashboard() {
                           </div>
                         </td>
                         <td className="px-4 py-3 text-sm">{course.level}</td>
-                        <td className="px-4 py-3 text-sm">{course.price.toLocaleString()}</td>
+                        <td className="px-4 py-3 text-sm">
+                          {course.free ? (
+                            <span className="font-medium text-green-600 dark:text-green-400">Free</span>
+                          ) : (
+                            <div className="flex flex-col">
+                              <span className={course.discount && course.discount > 0 ? "line-through text-muted-foreground text-xs" : ""}>
+                                {course.price.toLocaleString()}
+                              </span>
+                              {course.discount && course.discount > 0 && (
+                                <span className="font-medium text-green-600 dark:text-green-400">
+                                  {course.discount.toLocaleString()}
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </td>
                         <td className="px-4 py-3 text-sm">{course.hours}h</td>
                         <td className="px-4 py-3 text-sm">
                           {course.rating ? (
@@ -1152,12 +1323,16 @@ export default function LecturerDashboard() {
                                   subtitle: course.subtitle,
                                   introduction_video: course.introduction_video,
                                   description: course.description,
-                                  price: course.price,
-                                  level: course.level,
-                                  hours: course.hours,
-                                  what_you_will_learn: course.what_you_will_learn,
-                                  ingredients: course.ingredients,
-
+                                  price: course.price || 0,
+                                  category: course.category || "",
+                                  level: course.level || "",
+                                  hours: course.hours || 1,
+                                  what_you_will_learn: course.what_you_will_learn && course.what_you_will_learn.length > 0 ? course.what_you_will_learn : [""],
+                                  ingredients: course.ingredients && course.ingredients.length > 0 ? course.ingredients : [""],
+                                  who_is_this_course_for: course.who_is_this_course_for && course.who_is_this_course_for.length > 0 ? course.who_is_this_course_for : [""],
+                                  requirements: course.requirements && course.requirements.length > 0 ? course.requirements : [""],
+                                  free: course.free || false,
+                                  discount: course.discount || 0,
                                 });
                                 setFilePreview(course.image_url);
                                 setEditDialogOpen(true);

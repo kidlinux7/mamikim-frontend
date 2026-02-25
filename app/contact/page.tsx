@@ -255,7 +255,7 @@ const Contactus = () => {
                                 </div>
                                 <div>
                                     <span className="font-bold text-gray-800">Call us</span>
-                                    <div className="text-orange-500 font-medium">+255 787 249 681</div>
+                                    <div className="text-orange-500 font-medium">+255 757 798 155</div>
                                 </div>
                             </div>
                         </div>
