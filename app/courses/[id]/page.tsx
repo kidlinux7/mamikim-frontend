@@ -918,16 +918,16 @@ function CoursePage({ params }: { params: { id: string } }) {
                   </div>
 
                   {/* What about it? */}
-                  <div className="mb-6">
+                  {/* <div className="mb-6">
                     <h2 className="text-2xl font-semibold mb-3">What about it?</h2>
                     <p className="text-muted-foreground mb-4">{course_data.description}</p>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {/* <div className="relative w-full h-56 rounded-lg overflow-hidden border">
-                  <Image src={course_data.image_url || '/placeholder-course.jpg'} alt="course" fill style={{ objectFit: 'cover' }} />
-                </div> */}
+                      <div className="relative w-full h-56 rounded-lg overflow-hidden border">
+                        <Image src={course_data.image_url || '/placeholder-course.jpg'} alt="course" fill style={{ objectFit: 'cover' }} />
+                      </div>
 
                     </div>
-                  </div>
+                  </div> */}
 
 
 
