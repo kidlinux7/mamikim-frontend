@@ -251,7 +251,7 @@ const Contactus = () => {
                             <div className="space-y-4">
                                 <div>
                                     <span className="font-bold text-gray-800">Email us</span>
-                                    <div className="text-orange-500 font-medium">info@mamikim.com</div>
+                                    <div className="text-orange-500 font-medium">info@mamikim.africa</div>
                                 </div>
                                 <div>
                                     <span className="font-bold text-gray-800">Call us</span>

@@ -13,7 +13,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Plus, Trash2, GripVertical, Youtube, FileText, ArrowLeft, BookOpen } from "lucide-react";
+import { Plus, Trash2, GripVertical, Youtube, FileText, ArrowLeft, BookOpen, Pencil } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase/client";
 
@@ -83,6 +83,8 @@ export default function CourseContent({ params: pageParams }: { params: { id: st
   const [students, setStudents] = useState<any[]>([]);
   const [studentsLoading, setStudentsLoading] = useState(true);
   const [studentsError, setStudentsError] = useState<string | null>(null);
+  const [isEditingChapter, setIsEditingChapter] = useState(false);
+  const [editChapterId, setEditChapterId] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
@@ -191,34 +193,62 @@ export default function CourseContent({ params: pageParams }: { params: { id: st
   // Chapter operations
   async function onAddChapter(data: ChapterFormValues) {
     try {
-      const { data: chapter, error } = await supabase
-        .from("chapters")
-        .insert({
-          course_id: courseId,
-          title: data.title,
-          position: chapters.length,
-        })
-        .select()
-        .single();
+      if (isEditingChapter && editChapterId) {
+        const { error } = await supabase
+          .from("chapters")
+          .update({ title: data.title })
+          .eq("id", editChapterId);
 
-      if (error) throw error;
+        if (error) throw error;
 
-      setChapters([...chapters, { ...chapter, contents: [] }]);
+        setChapters(chapters.map(ch =>
+          ch.id === editChapterId ? { ...ch, title: data.title } : ch
+        ));
+
+        toast({
+          title: "Chapter updated",
+          description: "The chapter has been updated successfully.",
+        });
+      } else {
+        const { data: chapter, error } = await supabase
+          .from("chapters")
+          .insert({
+            course_id: courseId,
+            title: data.title,
+            position: chapters.length,
+          })
+          .select()
+          .single();
+
+        if (error) throw error;
+
+        setChapters([...chapters, { ...chapter, contents: [] }]);
+
+        toast({
+          title: "Chapter added",
+          description: "The chapter has been added successfully.",
+        });
+      }
+
       chapterForm.reset();
       setChapterDialogOpen(false);
-
-      toast({
-        title: "Chapter added",
-        description: "The chapter has been added successfully.",
-      });
+      setIsEditingChapter(false);
+      setEditChapterId(null);
 
     } catch (error: any) {
       toast({
-        title: "Error adding chapter",
+        title: isEditingChapter ? "Error updating chapter" : "Error adding chapter",
         description: error.message,
         variant: "destructive",
       });
     }
+  }
+
+  function handleEditChapter(chapter: Chapter) {
+    setIsEditingChapter(true);
+    setEditChapterId(chapter.id);
+    chapterForm.setValue("title", chapter.title);
+    setChapterDialogOpen(true);
   }
 
   async function onDeleteChapter(chapterId: string) {
@@ -425,18 +455,29 @@ export default function CourseContent({ params: pageParams }: { params: { id: st
           <p className="text-muted-foreground">{course.subtitle}</p>
         </div>
 
-        <Dialog open={chapterDialogOpen} onOpenChange={setChapterDialogOpen}>
+        <Dialog open={chapterDialogOpen} onOpenChange={(open) => {
+          setChapterDialogOpen(open);
+          if (!open) {
+            setIsEditingChapter(false);
+            setEditChapterId(null);
+            chapterForm.reset();
+          }
+        }}>
           <DialogTrigger asChild>
-            <Button>
+            <Button onClick={() => {
+              setIsEditingChapter(false);
+              setEditChapterId(null);
+              chapterForm.reset();
+            }}>
               <Plus className="mr-2 h-4 w-4" />
               Add Chapter
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add Chapter</DialogTitle>
+              <DialogTitle>{isEditingChapter ? "Edit Chapter" : "Add Chapter"}</DialogTitle>
               <DialogDescription>
-                Add a new chapter to your course.
+                {isEditingChapter ? "Update the chapter title." : "Add a new chapter to your course."}
               </DialogDescription>
             </DialogHeader>
 
@@ -457,10 +498,14 @@ export default function CourseContent({ params: pageParams }: { params: { id: st
                 />
 
                 <DialogFooter>
-                  <Button type="button" variant="outline" onClick={() => setChapterDialogOpen(false)}>
+                  <Button type="button" variant="outline" onClick={() => {
+                    setChapterDialogOpen(false);
+                    setIsEditingChapter(false);
+                    setEditChapterId(null);
+                  }}>
                     Cancel
                   </Button>
-                  <Button type="submit">Add Chapter</Button>
+                  <Button type="submit">{isEditingChapter ? "Update Chapter" : "Add Chapter"}</Button>
                 </DialogFooter>
               </form>
             </Form>
@@ -661,6 +706,14 @@ export default function CourseContent({ params: pageParams }: { params: { id: st
                       </Form>
                     </DialogContent>
                   </Dialog>
+
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => handleEditChapter(chapter)}
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </Button>
 
                   <AlertDialog>
                     <AlertDialogTrigger asChild>

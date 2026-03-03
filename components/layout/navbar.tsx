@@ -92,12 +92,12 @@ const Navbar = () => {
             <div className="flex items-center space-x-4 mt-2 sm:mt-0">
               <span>We&apos;re active on</span>
               <div className="flex space-x-2">
-                <a target='_blank' href="https://www.instagram.com/mamikimcakeacademy?igsh=dnpmdWl4bXM5MTFj">
+                <a target='_blank' href="https://www.tiktok.com/@mamikim.academy?_r=1&_t=ZS-94M5srgRfkN">
                   <BsTiktok />
-                </a> 
+                </a>
                 <a target='_blank' href="https://youtube.com/@mamikimcakeacademy2130?si=pH7mNyZPtu4BQsfs">
                   <SiYoutube />
-                 </a>
+                </a>
                 <a target='_blank' href="https://www.instagram.com/mamikimcakeacademy?igsh=dnpmdWl4bXM5MTFj">
                   <FaInstagram />
                 </a>
@@ -168,7 +168,9 @@ const Navbar = () => {
                 </div> */}
                 {/* <a href="#" className="text-gray-600 hover:text-orange-500 transition-colors font-medium">Blog</a>
                 <a href="#" className="text-gray-600 hover:text-orange-500 transition-colors font-medium">Shop</a> */}
+                <a href="/shop" className="text-gray-600 hover:text-orange-500 transition-colors font-medium">Shop</a>
                 <a href="/contact" className="text-gray-600 hover:text-orange-500 transition-colors font-medium">Contact</a>
+
               </div>
             </div>
 
@@ -198,8 +200,9 @@ const Navbar = () => {
               <a href="/Aboutus" className="block px-3 py-2 text-gray-600">About</a>
               <a href="#" className="block px-3 py-2 text-gray-600">Courses</a>
               <a href="#" className="block px-3 py-2 text-gray-600">Blog</a>
-              <a href="#" className="block px-3 py-2 text-gray-600">Shop</a>
-              <a href="/Contactus" className="block px-3 py-2 text-gray-600">Contact</a>
+              <a href="/shop" className="block px-3 py-2 text-gray-600">Shop</a>
+              <a href="/contact" className="block px-3 py-2 text-gray-600">Contact</a>
+
             </div>
           </div>
         )}

@@ -61,7 +61,7 @@ const HomePage = () => {
       icon: <FaMapMarker className="text-orange-500" />,
       title: "Shop and get the best ingredients and tools",
       description: "Need the best ingredients and tools to take your baking to the next level? Shop with us! ",
-      link: "#",
+      link: "/shop",
       dark: false
     },
     {
@@ -364,7 +364,7 @@ const HomePage = () => {
               <h3 className={`${content.dark ? 'text-white' : 'text-gray-800'} text-lg font-semibold mb-2`}>{content.title}</h3>
               <p className={`${content.dark ? 'text-white' : 'text-gray-500'} text-sm font-semibold mb-2`}>{content.description}</p>
               <div className="mt-4">
-                <a href='#' >
+                <a href={content.link} >
                   <button className="text-orange-500 hover:text-orange-600 transition-colors flex items-center">
                     Get Started
                     <ArrowRight className="ml-1 h-4 w-4" />
